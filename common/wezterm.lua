@@ -41,7 +41,7 @@ end
 ----------------------------------------------------------------------
 
 -- Window
-config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
+config.window_decorations = 'RESIZE|INTEGRATED_BUTTONS|MACOS_FORCE_ENABLE_SHADOW'
 config.integrated_title_button_alignment = 'Right'
 config.integrated_title_buttons = { 'Hide', 'Maximize', 'Close' }
 -- config.integrated_title_button_style = 'Windows'
