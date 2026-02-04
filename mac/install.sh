@@ -37,7 +37,7 @@ PACKAGES=(
 )
 
 CASKS=(
-    "wezterm"
+    "wezterm-nightly"
     "alacritty"
     "neovide"
     "font-fira-mono-nerd-font"
