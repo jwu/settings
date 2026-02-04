@@ -2,6 +2,10 @@
 -- basic
 -- /////////////////////////////////////////////////////////////////////////////
 
+local is_win = jit.os == 'Windows'
+local is_mac = jit.os == 'OSX'
+local is_linux = jit.os == 'Linux'
+
 -- neovide settings
 if vim.g.neovide then
   -- rendering
@@ -54,6 +58,7 @@ if vim.g.neovide then
   -- })
 end
 
+-- DELME: {
 local function OSX()
   return vim.uv.os_uname().sysname == 'Darwin'
 end
@@ -69,6 +74,7 @@ end
 _G.OSX = OSX
 _G.LINUX = LINUX
 _G.WINDOWS = WINDOWS
+-- } DELME:
 
 -- /////////////////////////////////////////////////////////////////////////////
 -- language and encoding setup
@@ -79,16 +85,16 @@ _G.WINDOWS = WINDOWS
 vim.opt.langmenu = 'none'
 
 -- use English for anaything in vim-editor.
-if WINDOWS() then
+if is_win then
   vim.cmd('language english')
-elseif OSX() then
-  vim.cmd('language en_US')
+elseif is_mac then
+  vim.cmd('language en_US.UTF-8')
 else
   vim.cmd('language en_US.utf8')
 end
 
 -- try to set encoding to utf-8
-if WINDOWS() then
+if is_win then
   -- Let Vim use utf-8 internally, because many scripts require this
   vim.opt.encoding = 'utf-8'
   vim.bo.fileencoding = 'utf-8'
@@ -154,14 +160,14 @@ vim.opt.scrolloff = 0 -- minimal number of screen lines to keep above and below 
 vim.opt.wrap = false -- do not wrap text
 vim.opt.autochdir = false -- no autochchdir
 
-if WINDOWS() then
+if is_win then
   if vim.g.neovide then
     vim.g.neovide_scroll_animation_length = 0.3
     vim.g.neovide_scroll_animation_far_lines = 0.3
   end
 
   vim.opt.guifont = 'FiraMono Nerd Font,Microsoft YaHei Mono:h12'
-elseif OSX() then
+elseif is_mac then
   vim.opt.guifont = 'FiraMono Nerd Font,PingFang SC:h16'
 else
   vim.opt.guifont = 'FiraMono Nerd Font:h12'
