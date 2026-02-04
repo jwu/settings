@@ -41,7 +41,10 @@ end
 ----------------------------------------------------------------------
 
 -- Window
-config.window_decorations = 'RESIZE'
+config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
+config.integrated_title_button_alignment = 'Right'
+config.integrated_title_buttons = { 'Hide', 'Maximize', 'Close' }
+-- config.integrated_title_button_style = 'Windows'
 config.window_background_opacity = 0.95
 config.window_padding = {
   left = 0,
@@ -56,8 +59,10 @@ config.adjust_window_size_when_changing_font_size = false
 -- Tab Bar
 config.enable_tab_bar = true
 config.use_fancy_tab_bar = true
+config.tab_bar_at_bottom = false
 config.hide_tab_bar_if_only_one_tab = false
--- config.tab_max_width = 16
+config.tab_max_width = 16 -- ignore when use fancy_tab_bar
+config.enable_scroll_bar = false
 
 -- Colors
 config.color_scheme = 'OneHalfDark'
