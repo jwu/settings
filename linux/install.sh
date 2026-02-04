@@ -18,23 +18,23 @@ echo "    Linux Settings Dir: $SCRIPT_DIR"
 # ==========================================
 
 if ! command -v pacman &> /dev/null; then
-    echo "Error: pacman is not available. Are you not on Arch Linux?"
-    exit 1
+  echo "Error: pacman is not available. Are you not on Arch Linux?"
+  exit 1
 fi
 
 echo ">>> Installing/Updating packages via pacman..."
 sudo pacman -Sy
 
 PACKAGES=(
-    "zsh"
-    "starship"
-    "zoxide"
-    "neovim"
-    "fzf"
-    "lsd"
-    "fd"
-    "bat"
-    "git-delta"
+  "zsh"
+  "starship"
+  "zoxide"
+  "neovim"
+  "fzf"
+  "lsd"
+  "fd"
+  "bat"
+  "git-delta"
 )
 
 echo "Installing packages: ${PACKAGES[*]}"
@@ -46,10 +46,10 @@ sudo pacman -S --needed --noconfirm "${PACKAGES[@]}"
 
 echo ">>> Setting zsh as default shell..."
 if [ "$SHELL" != "$(which zsh)" ]; then
-    echo "Changing default shell to zsh..."
-    chsh -s "$(which zsh)"
+  echo "Changing default shell to zsh..."
+  chsh -s "$(which zsh)"
 else
-    echo "zsh is already the default shell."
+  echo "zsh is already the default shell."
 fi
 
 # ==========================================
@@ -59,10 +59,10 @@ fi
 echo ">>> Setting up Oh My Zsh..."
 
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    echo "Installing Oh My Zsh..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  echo "Installing Oh My Zsh..."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 else
-    echo "Oh My Zsh is already installed."
+  echo "Oh My Zsh is already installed."
 fi
 
 ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
@@ -73,10 +73,10 @@ ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 echo ">>> Installing zsh-autosuggestions..."
 if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+  git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
 else
-    echo "zsh-autosuggestions already exists, pulling latest..."
-    cd "$ZSH_CUSTOM/plugins/zsh-autosuggestions" && git pull && cd - > /dev/null
+  echo "zsh-autosuggestions already exists, pulling latest..."
+  cd "$ZSH_CUSTOM/plugins/zsh-autosuggestions" && git pull && cd - > /dev/null
 fi
 
 # ==========================================
@@ -84,25 +84,29 @@ fi
 # ==========================================
 
 echo ">>> Installing Dracula Zsh Theme..."
-if [ ! -d "$ZSH_CUSTOM/themes/dracula" ]; then
-    git clone https://github.com/dracula/zsh.git "$ZSH_CUSTOM/themes/dracula"
-else
-    echo "Dracula theme repo already exists, pulling latest..."
-    cd "$ZSH_CUSTOM/themes/dracula" && git pull && cd - > /dev/null
-fi
+OH_MY_ZSH="$HOME/.oh-my-zsh"
+TEMP_DIR=$(mktemp -d)
 
-echo "Copying dracula theme file..."
-cp "$ZSH_CUSTOM/themes/dracula/dracula.zsh-theme" "$ZSH_CUSTOM/themes/dracula.zsh-theme"
+if [ ! -f "$OH_MY_ZSH/themes/dracula.zsh-theme" ]; then
+  curl -fsSL "https://github.com/dracula/zsh/archive/master.zip" -o "$TEMP_DIR/dracula.zip"
+  bsdtar -xzf "$TEMP_DIR/dracula.zip" -C "$TEMP_DIR"
+  cp "$TEMP_DIR/zsh-master/dracula.zsh-theme" "$OH_MY_ZSH/themes/dracula.zsh-theme"
+  cp -r "$TEMP_DIR/zsh-master/lib" "$OH_MY_ZSH/themes/lib"
+  rm -rf "$TEMP_DIR"
+  echo "  Dracula Zsh Theme installed"
+else
+  echo "  Dracula Zsh Theme already installed"
+fi
 
 # ==========================================
 # Copy Configurations (cp instead of ln)
 # ==========================================
 
 backup_file() {
-    if [ -f "$1" ]; then
-        echo "Backing up $1 to $1.bak.$TIMESTAMP"
-        cp "$1" "$1.bak.$TIMESTAMP"
-    fi
+  if [ -f "$1" ]; then
+    echo "Backing up $1 to $1.bak.$TIMESTAMP"
+    cp "$1" "$1.bak.$TIMESTAMP"
+  fi
 }
 
 echo ">>> Copying configuration files..."
@@ -130,24 +134,24 @@ echo "Configuring Starship..."
 mkdir -p "$HOME/.config"
 backup_file "$HOME/.config/starship.toml"
 if [ -f "$SCRIPT_DIR/starship.toml" ]; then
-    cp "$SCRIPT_DIR/starship.toml" "$HOME/.config/starship.toml"
+  cp "$SCRIPT_DIR/starship.toml" "$HOME/.config/starship.toml"
 fi
 
 # Alacritty (optional for TTY systems, skip if not needed)
 if command -v alacritty &> /dev/null; then
-    echo "Configuring Alacritty..."
-    mkdir -p "$HOME/.config/alacritty"
-    backup_file "$HOME/.config/alacritty/alacritty.toml"
-    if [ -f "$SCRIPT_DIR/alacritty.toml" ]; then
-        cp "$SCRIPT_DIR/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
-    fi
+  echo "Configuring Alacritty..."
+  mkdir -p "$HOME/.config/alacritty"
+  backup_file "$HOME/.config/alacritty/alacritty.toml"
+  if [ -f "$SCRIPT_DIR/alacritty.toml" ]; then
+    cp "$SCRIPT_DIR/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
+  fi
 fi
 
 # .zshrc
 echo "Configuring .zshrc..."
 backup_file "$HOME/.zshrc"
 if [ -f "$SCRIPT_DIR/zsh.zshrc" ]; then
-    cp "$SCRIPT_DIR/zsh.zshrc" "$HOME/.zshrc"
+  cp "$SCRIPT_DIR/zsh.zshrc" "$HOME/.zshrc"
 fi
 
 echo ">>> Installation Complete!"
