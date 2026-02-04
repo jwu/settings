@@ -1,4 +1,4 @@
-export PATH=/opt/homebrew/bin:~/bin:~/.local/bin:/usr/local/bin:$PATH
+export PATH=~/bin:~/.local/bin:/usr/local/bin:$PATH
 export ZSH=~/.oh-my-zsh
 export EDITOR=nvim
 export LANG=en_US.UTF-8
@@ -48,3 +48,30 @@ export FZF_CTRL_T_OPTS="
   --walker-skip .git,node_modules,target
   --preview 'bat -n --color=always {}'
   --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+
+# ============ Clash Proxy Shortcuts ============
+
+# proxy on
+function pon() {
+  # dfault is 7890, otherwise use arg1
+  local port="${1:-7890}"
+  export http_proxy="http://127.0.0.1:$port"
+  export https_proxy="http://127.0.0.1:$port"
+  export all_proxy="socks5://127.0.0.1:$port"
+  echo "[Clash] Terminal Proxy ON (Port: $port)"
+}
+
+# proxy off
+function poff() {
+  unset http_proxy
+  unset https_proxy
+  unset all_proxy
+  echo "[Clash] Terminal Proxy OFF"
+}
+
+# proxy status
+function pstat() {
+  echo "HTTP:  ${http_proxy:-Direct}"
+  echo "HTTPS: ${https_proxy:-Direct}"
+  echo "ALL:   ${all_proxy:-Direct}"
+}

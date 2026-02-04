@@ -221,6 +221,7 @@
   - [btm](https://github.com/ClementTsang/bottom)
     - [btop](https://github.com/aristocratos/btop)
   - [xplr](https://github.com/sayanarijit/xplr)
+  - [clashtui](https://github.com/JohanChane/clashtui)
 - utils (network)
   - [xh](https://github.com/ducaale/xh)
   - [rustscan](https://github.com/bee-san/RustScan)
