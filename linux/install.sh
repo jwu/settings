@@ -35,6 +35,7 @@ PACKAGES=(
   "fd"
   "bat"
   "git-delta"
+  "terminus-font"
 )
 
 echo "Installing packages: ${PACKAGES[*]}"
@@ -110,6 +111,17 @@ backup_file() {
 }
 
 echo ">>> Copying configuration files..."
+
+# TTY Font
+echo ">>> Configuring tty font..."
+CONFIG_FILE="/etc/vconsole.conf"
+FONT_NAME="ter-v16n"
+if grep -q "^FONT=" "$CONFIG_FILE"; then
+  # replace setted font
+  sudo sed -i "s/^FONT=.*/FONT=$FONT_NAME/" "$CONFIG_FILE"
+else
+  sudo echo "FONT=$FONT_NAME" >> "$CONFIG_FILE"
+fi
 
 # LSD
 echo "Configuring LSD..."
