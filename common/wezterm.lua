@@ -342,6 +342,25 @@ config.keys = {
       size = { Percent = 50 },
     },
   },
+
+  -- command
+  {
+    key = 'p',
+    mods = mod_key_2,
+    action = wezterm.action.ActivateCommandPalette
+  },
+}
+
+----------------------------------------------------------------------
+-- Mouse Bindings
+----------------------------------------------------------------------
+
+config.mouse_bindings = {
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = mod_key,
+    action = wezterm.action.OpenLinkAtMouseCursor
+  },
 }
 
 ----------------------------------------------------------------------
