@@ -98,64 +98,7 @@ else
 fi
 
 # ==========================================
-# Copy Configurations (cp instead of ln)
+# Copy Configurations
 # ==========================================
 
-backup_file() {
-  if [ -f "$1" ]; then
-    echo "Backing up $1 to $1.bak.$TIMESTAMP"
-    cp "$1" "$1.bak.$TIMESTAMP"
-  fi
-}
-
-echo ">>> Copying configuration files..."
-
-# WezTerm
-echo "Configuring WezTerm..."
-backup_file "$HOME/.wezterm.lua"
-cp "$ROOT_DIR/common/wezterm.lua" "$HOME/.wezterm.lua"
-
-# Alacritty
-echo "Configuring Alacritty..."
-mkdir -p "$HOME/.config/alacritty"
-backup_file "$HOME/.config/alacritty/alacritty.toml"
-cp "$SCRIPT_DIR/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
-
-# LSD
-echo "Configuring LSD..."
-mkdir -p "$HOME/.config/lsd"
-backup_file "$HOME/.config/lsd/config.yaml"
-cp "$ROOT_DIR/common/lsd.yaml" "$HOME/.config/lsd/config.yaml"
-
-# Neovim
-echo "Configuring Neovim..."
-mkdir -p "$HOME/.config/nvim"
-backup_file "$HOME/.config/nvim/init.lua"
-cp "$ROOT_DIR/common/neovim.init.lua" "$HOME/.config/nvim/init.lua"
-
-# Neovide
-echo "Configuring Neovide..."
-mkdir -p "$HOME/.config/neovide"
-backup_file "$HOME/.config/neovide/config.toml"
-cp "$ROOT_DIR/common/neovide.config.toml" "$HOME/.config/neovide/config.toml"
-
-# Omnisharp
-echo "Configuring Omnisharp..."
-mkdir -p "$HOME/.omnisharp"
-backup_file "$HOME/.omnisharp/omnisharp.json"
-cp "$ROOT_DIR/common/omnisharp.json" "$HOME/.omnisharp/omnisharp.json"
-
-# Starship
-echo "Configuring Starship..."
-mkdir -p "$HOME/.config"
-backup_file "$HOME/.config/starship.toml"
-cp "$SCRIPT_DIR/starship.toml" "$HOME/.config/starship.toml"
-
-# .zshrc
-echo "Configuring .zshrc..."
-backup_file "$HOME/.zshrc"
-cp "$SCRIPT_DIR/zsh.zshrc" "$HOME/.zshrc"
-
-echo ">>> Installation Complete!"
-echo "    A new .zshrc has been created."
-echo "    Please restart your terminal or run 'source ~/.zshrc' to apply changes."
+bash "$SCRIPT_DIR/config.sh"
