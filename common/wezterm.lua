@@ -131,10 +131,14 @@ config.inactive_pane_hsb = {
 
 local function get_process_name(pane)
   local process_name = pane.foreground_process_name
-  if process_name == nil then
-    return ""
-  end
-  return process_name:match("([^/]+)$")
+  if not process_name then return '' end
+
+  local name = process_name:match('([^/\\]+)$')
+  if not name then name = process_name end
+
+  name = name:gsub('%.[eE][xX][eE]$', '')
+
+  return name
 end
 
 wezterm.on('format-tab-title', function(tab, tabs, panes, cfg, hover, max_width)
@@ -152,9 +156,9 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, cfg, hover, max_width)
     end
 
     if cwd_path == home then
-      title = "~"
+      title = '~'
     elseif string.find(cwd_path, home, 1, true) == 1 then
-      title = "~" .. string.sub(cwd_path, #home + 1)
+      title = '~' .. string.sub(cwd_path, #home + 1)
     else
       title = cwd_path
     end
@@ -165,11 +169,16 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, cfg, hover, max_width)
   -- ssh
   local process_name = get_process_name(pane)
   if process_name == 'ssh' then
-    title = 'ssh: ' .. title
+
+    if is_windows then
+      title = 'ssh mode'
+    else
+      title = 'ssh: ' .. title
+    end
 
     if tab.is_active then
       return {
-        { Background = { Color = '#fd5e6b' } },
+        { Background = { Color = '#e06c75' } },
         { Text = ' ' .. title .. ' ' },
       }
     end
