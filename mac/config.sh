@@ -7,7 +7,6 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 echo ">>> Starting configuration setup..."
 echo "    Root Config Dir: $ROOT_DIR"
@@ -19,8 +18,8 @@ echo "    Mac Settings Dir: $SCRIPT_DIR"
 
 backup_file() {
   if [ -f "$1" ]; then
-    echo "Backing up $1 to $1.bak.$TIMESTAMP"
-    cp "$1" "$1.bak.$TIMESTAMP"
+    echo "Backing up $1 to $1.bak"
+    cp "$1" "$1.bak"
   fi
 }
 
