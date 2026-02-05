@@ -2,7 +2,7 @@ export PATH=/opt/homebrew/bin:~/bin:~/.local/bin:/usr/local/bin:$PATH
 export ZSH=~/.oh-my-zsh
 export EDITOR=nvim
 export LANG=en_US.UTF-8
-export STARSHIP_CONFIG=~/bin/settings/mac/starship.toml
+export STARSHIP_CONFIG=~/.config/starship.toml
 
 ZSH_THEME="dracula"
 
