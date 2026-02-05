@@ -129,6 +129,14 @@ config.inactive_pane_hsb = {
   brightness = 0.7,
 }
 
+local function get_process_name(pane)
+  local process_name = pane.foreground_process_name
+  if process_name == nil then
+    return ""
+  end
+  return process_name:match("([^/]+)$")
+end
+
 wezterm.on('format-tab-title', function(tab, tabs, panes, cfg, hover, max_width)
   local pane = tab.active_pane
   local cwd_uri = pane.current_working_dir
@@ -152,6 +160,19 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, cfg, hover, max_width)
     end
   else
     title = pane.title
+  end
+
+  -- ssh
+  local process_name = get_process_name(pane)
+  if process_name == 'ssh' then
+    title = 'ssh: ' .. title
+
+    if tab.is_active then
+      return {
+        { Background = { Color = '#fd5e6b' } },
+        { Text = ' ' .. title .. ' ' },
+      }
+    end
   end
 
   return {
