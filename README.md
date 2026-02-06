@@ -199,6 +199,7 @@
     - [winget](https://github.com/microsoft/winget-cli)
   - Mac
     - [homebrew](https://brew.sh/)
+      - [zerobrew](https://github.com/lucasgelfond/zerobrew)
 - utils (awesome)
   - [rg](https://github.com/BurntSushi/ripgrep)
   - [z](https://github.com/ajeetdsouza/zoxide)
