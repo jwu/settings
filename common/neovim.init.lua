@@ -6,6 +6,12 @@ local is_win = jit.os == 'Windows'
 local is_mac = jit.os == 'OSX'
 local is_linux = jit.os == 'Linux'
 
+local is_color16 = false
+if is_linux then
+  is_color16 = vim.env.TERM == 'linux'
+end
+
+
 -- neovide settings
 if vim.g.neovide then
   -- rendering
@@ -521,6 +527,7 @@ require('lazy').setup({
   {
     'navarasu/onedark.nvim',
     priority = 100,
+    dependencies = { 'RRethy/base16-nvim' },
     config = function()
       require('onedark').setup {
         style = 'dark',
@@ -575,6 +582,11 @@ require('lazy').setup({
           '%x',
           vim.api.nvim_get_hl(0, {id=vim.api.nvim_get_hl_id_by_name('Normal')}).fg
         )
+      end
+
+      -- color16 setup
+      if is_color16 then
+        vim.cmd.colorscheme('base16-onedark')
       end
     end
   },
@@ -717,8 +729,8 @@ require('lazy').setup({
         options = {
           icons_enabled = true,
           theme = 'onedark',
-          component_separators = { left = '', right = ''},
-          section_separators = { left = '', right = ''},
+          component_separators = { left = '', right = '' },
+          section_separators = { left = '', right = '' },
           disabled_filetypes = {
             statusline = {},
             winbar = {},
@@ -777,6 +789,18 @@ require('lazy').setup({
           },
         }
       }
+
+      -- color16 setup
+      if is_color16 then
+        require('lualine').setup{
+          options = {
+            icons_enabled = false,
+            theme = '16color',
+            component_separators = { left = '', right = '' },
+            section_separators = { left = '', right = '' },
+          }
+        }
+      end
     end,
   },
 
