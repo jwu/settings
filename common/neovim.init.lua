@@ -6,11 +6,13 @@ local is_win = jit.os == 'Windows'
 local is_mac = jit.os == 'OSX'
 local is_linux = jit.os == 'Linux'
 
+-- color16 settings
 local is_color16 = false
+local indent_char = '▏'
 if is_linux then
   is_color16 = vim.env.TERM == 'linux'
+  indent_char = '|'
 end
-
 
 -- neovide settings
 if vim.g.neovide then
@@ -900,8 +902,8 @@ require('lazy').setup({
     config = function()
       require('ibl').setup {
         indent = {
-          char = '▏',
-          tab_char = '▏',
+          char = indent_char,
+          tab_char = indent_char,
         },
         scope = { enabled = false },
         exclude = {
@@ -929,7 +931,7 @@ require('lazy').setup({
     config = function()
       local mini_is = require('mini.indentscope')
       mini_is.setup {
-        symbol = '▏',
+        symbol = indent_char,
         draw = {
           delay = 100,
           animation = mini_is.gen_animation.none(),
