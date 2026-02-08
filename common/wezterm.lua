@@ -219,8 +219,8 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, cfg, hover, max_width)
       -- Convert to appropriate path format
       if is_windows then
         -- On Windows, cwd might be in URL format or local path
-        cwd = cwd:gsub('^file://localhost/', '')
-        cwd = cwd:gsub('^file://[^/]+/', '')
+        cwd = cwd:gsub('^/([A-Za-z]:)', '%1')
+        cwd = cwd:gsub('/', '\\')
       end
       title = abbreviate_path(cwd)
     end
