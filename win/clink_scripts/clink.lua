@@ -1,3 +1,17 @@
+-- send OSC 7 for wezterm repaint
+-- NOTE: without this, wezterm tab title will show C:\WINDOWS\ when directory changed
+----------------------------------------
+
+function set_user_vars(prompt_begin, prompt_end)
+  -- OSC 7 for CWD
+  clink.prompt.value = clink.prompt.value
+  .. "\x1b]7;file://"
+  .. clink.get_cwd()
+  .. "\x1b\\"
+end
+
+clink.prompt.register_filter(set_user_vars, 50)
+
 -- update console title
 ----------------------------------------
 
