@@ -141,41 +141,101 @@ local function get_process_name(pane)
   return name
 end
 
-wezterm.on('format-tab-title', function(tab, tabs, panes, cfg, hover, max_width)
-  local pane = tab.active_pane
-  local cwd_uri = pane.current_working_dir
-  local title = ''
+-- Helper function to abbreviate path with ~ for home directory
+local function abbreviate_path(path)
+  -- Windows home: C:\Users\username
+  path = path:gsub('^[A-Z]:\\Users\\[^\\]+', '~')
 
-  if cwd_uri then
-    local cwd_path = cwd_uri.file_path
-    local home = wezterm.home_dir
+  -- Cygwin/MSYS home: /c/Users/username
+  path = path:gsub('^/c/Users/[^/]+', '~')
 
-    if is_windows then
-      cwd_path = cwd_path:gsub('^/([A-Za-z]:)', '%1')
-      cwd_path = cwd_path:gsub('/', '\\')
-    end
+  -- Unix/Linux home: /home/username or /Users/username
+  path = path:gsub('^/home/[^/]+', '~')
+  path = path:gsub('^/Users/[^/]+', '~')
 
-    if cwd_path == home then
-      title = '~'
-    elseif string.find(cwd_path, home, 1, true) == 1 then
-      title = '~' .. string.sub(cwd_path, #home + 1)
-    else
-      title = cwd_path
-    end
-  else
-    title = pane.title
+  return path
+end
+
+-- Helper function to extract path from title string
+local function extract_path_from_title(title)
+  if not title or title == '' then
+    return nil
   end
 
-  -- ssh
+  -- Format 1: user@host:/path or SSH connection
+  local path = title:match('[:%s]*([~]?/[a-zA-Z0-9_/-]+)$')
+  if path then
+    return path
+  end
+
+  -- Format 2: PowerShell - C:\path or C:\path
+  local win_path = title:match('([A-Z]:\\[^\r\n\t ]+)$')
+  if win_path then
+    return win_path
+  end
+
+  -- Format 3: /c/Users/user or /home/user
+  local unix_path = title:match('^(/[a-zA-Z0-9_/-]+)$')
+  if unix_path then
+    return unix_path
+  end
+
+  -- Format 4: WSL or other domain names (e.g., "WSL:Ubuntu")
+  -- In this case there's no path, return nil
+  return nil
+end
+
+wezterm.on('format-tab-title', function(tab, tabs, panes, cfg, hover, max_width)
+  local pane = tab.active_pane
+  local title_text = pane.title or ''
+  local title = ''
+
+  -- SSH detection and styling
+  local is_ssh = false
   local process_name = get_process_name(pane)
   if process_name == 'ssh' then
+    is_ssh = true
+  end
 
-    if is_windows then
-      title = 'ssh mode'
-    else
-      title = 'ssh: ' .. title
+  -- if ssh detected, change path by pane.title
+  if is_ssh then
+    -- No shell integration, extract path from pane.title
+    local extracted_path = extract_path_from_title(title_text)
+
+    if extracted_path then
+      title = abbreviate_path(extracted_path)
+    elseif title_text == 'wezterm' or title_text == 'bash' or title_text == "zsh" or title_text == "cmd.exe" or title_text == "powershell" then
+      -- If title is the default process name, show ~
+      title = '~'
     end
+  else
+    -- Try to get path from current_working_dir otherwise
+    local cwd_uri = pane.current_working_dir
+    if cwd_uri then
 
+      -- Shell integration is available, use cwd directly
+      local cwd = cwd_uri.file_path or ''
+
+      -- Convert to appropriate path format
+      if is_windows then
+        -- On Windows, cwd might be in URL format or local path
+        cwd = cwd:gsub('^file://localhost/', '')
+        cwd = cwd:gsub('^file://[^/]+/', '')
+      end
+      title = abbreviate_path(cwd)
+    end
+  end
+
+  -- Other cases (e.g., WSL:Ubuntu), use title directly
+  if not title or title == '' then
+    title = title_text
+  end
+
+  -- formatted title with SSH
+  if is_ssh then
+    title = 'ssh: ' .. title
+
+    -- NOTE: return SSH active tab with red color
     if tab.is_active then
       return {
         { Background = { Color = '#e06c75' } },
