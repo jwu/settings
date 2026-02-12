@@ -9,15 +9,10 @@ local is_linux = jit.os == 'Linux'
 -- color16 settings
 local is_color16 = false
 local indent_char = '▏'
-local ctrl_key = 'C'
 
 if is_linux then
   is_color16 = vim.env.TERM == 'linux'
   indent_char = '|'
-end
-
-if is_mac then
-  ctrl_key = 'D'
 end
 
 -- neovide settings
@@ -680,7 +675,7 @@ require('lazy').setup({
     },
     keys = {
       -- finder
-      { '<'..ctrl_key..'-p>', function() Snacks.picker.smart() end, desc = 'Smart Find Files' },
+      { '<c-p>', function() Snacks.picker.smart() end, desc = 'Smart Find Files' },
       { 'f/', function() Snacks.picker.files() end, desc = 'Find Files' },
       { 'g/', function() Snacks.picker.grep() end, desc = 'Grep' },
       { '<leader>e', function() Snacks.explorer() end, desc = 'File Explorer' },
