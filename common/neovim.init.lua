@@ -9,9 +9,15 @@ local is_linux = jit.os == 'Linux'
 -- color16 settings
 local is_color16 = false
 local indent_char = '▏'
+local ctrl_key = 'C'
+
 if is_linux then
   is_color16 = vim.env.TERM == 'linux'
   indent_char = '|'
+end
+
+if is_mac then
+  ctrl_key = 'D'
 end
 
 -- neovide settings
@@ -159,7 +165,7 @@ vim.opt.maxmempattern = 1000 -- enlarge maxmempattern from 1000 to ... (2000000 
 -- /////////////////////////////////////////////////////////////////////////////
 
 --------------------------------------------------------------------
--- Desc: Visual
+-- Desc: Appearance
 --------------------------------------------------------------------
 
 vim.opt.matchtime = 0 -- 0 second to show the matching paren (much faster)
@@ -594,47 +600,119 @@ require('lazy').setup({
   },
 
   ------------------------------
-  -- exvim-lite
+  -- snacks.nvim
   ------------------------------
 
   {
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      bigfile = {
+        enabled = true,
+        notify = true,
+        size = 1.5 * 1024 * 1024, -- 1.5MB
+        line_length = 1000, -- average line length (useful for minified files)
+      },
+      dashboard = { enabled = true },
+      explorer = {
+        enabled = true,
+      },
+      indent = {
+        indent = {
+          enabled = true,
+          char = indent_char
+        },
+        scope = {
+          enabled = true, -- enable highlighting the current scope
+          char = indent_char
+        },
+        animate= {
+          enabled = false
+        },
+      },
+      input = { enabled = true },
+      picker = {
+        enabled = true,
+        sources = {
+          explorer = {
+            jump = { close = true }
+          }
+        }
+      },
+      notifier = {
+        enabled = true,
+        timeout = 3000,
+      },
+      quickfile = { enabled = true },
+      scope = { enabled = true },
+      scroll = {
+        enabled = true,
+        animate = {
+          duration = { step = 5, total = 50 },
+          easing = 'linear',
+        },
+        -- faster animation when repeating scroll after delay
+        animate_repeat = {
+          delay = 100, -- delay in ms before using the repeat animation
+          duration = { step = 5, total = 50 },
+          easing = 'linear',
+        },
+      },
+      statuscolumn = {
+        enabled = false,
+        left = { 'mark', 'sign', 'git', 'fold' }, -- priority of signs on the left (high to low)
+        right = {}, -- priority of signs on the right (high to low)
+        folds = {
+          open = false, -- show open fold icons
+          git_hl = false, -- use Git Signs hl for fold icons
+        },
+        git = {
+          patterns = { 'GitSign', 'MiniDiffSign' },
+        },
+        refresh = 50, -- refresh at most every 50ms,
+      },
+      words = { enabled = true },
+    },
+    keys = {
+      -- finder
+      { '<'..ctrl_key..'-p>', function() Snacks.picker.smart() end, desc = 'Smart Find Files' },
+      { 'f/', function() Snacks.picker.files() end, desc = 'Find Files' },
+      { 'g/', function() Snacks.picker.grep() end, desc = 'Grep' },
+      { '<leader>e', function() Snacks.explorer() end, desc = 'File Explorer' },
+      { '<leader>:', function() Snacks.picker.command_history() end, desc = 'Command History' },
+      { '<leader>n', function() Snacks.picker.notifications() end, desc = 'Notification History' },
+
+      -- git
+      { '<leader>gl', function() Snacks.picker.git_log() end, desc = 'Git Log' },
+      { '<leader>df', function() Snacks.picker.git_diff() end, desc = 'Git Diff (Hunks)' },
+      { '<leader>gb', function() Snacks.gitbrowse() end, desc = 'Git Browse', mode = { 'n', 'v' } },
+
+      -- Buffer
+      { '<leader>bd', function() Snacks.bufdelete() end, desc = 'Delete Buffer' },
+      { '<leader>t', function() Snacks.terminal() end, desc = 'Toggle Terminal' },
+    },
+  },
+
+  ------------------------------
+  -- exvim-lite
+  ------------------------------
+
+  -- DELME:
+  {
     'jwu/exvim-lite',
     config = function()
-      local function is_nvim_tree_open()
-        for _, win in ipairs(vim.api.nvim_list_wins()) do
-          local bufnr = vim.api.nvim_win_get_buf(win)
-          local filetype = vim.api.nvim_get_option_value('filetype', { buf = bufnr })
-          if filetype == 'NvimTree' then
-            return true
-          end
-        end
-        return false
-      end
-
-      local function find_file()
-        if is_nvim_tree_open() then
-          vim.cmd('NvimTreeFindFile')
-          return
-        end
-
-        vim.cmd('EXProjectFind')
-      end
-
       local function strip_ws()
         vim.cmd('StripWhitespace')
         print('whitespace striped!')
       end
 
-      vim.api.nvim_create_autocmd({'FileType'}, {
-        group = ex_group,
-        pattern = {'exproject', 'exsearch'},
-        callback = function()
-          vim.b.miniindentscope_disable = true
-        end,
-      })
-
       -- buffer operation
-      vim.keymap.set('n', '<leader>bd', ':EXbd<CR>', { noremap = true, silent = true, unique = true })
+      -- vim.keymap.set('n', '<leader>bd', ':EXbd<CR>', { noremap = true, silent = true, unique = true })
       vim.keymap.del('n', '<C-l>')
       vim.keymap.set('n', '<C-l>', ':EXbn<CR>', { noremap = true, silent = true, unique = true })
       vim.keymap.set('n', '<C-h>', ':EXbp<CR>', { noremap = true, silent = true, unique = true })
@@ -650,7 +728,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>gs', ':call ex#search#toggle_window()<CR>', { noremap = true, unique = true })
 
       -- plugin hotkey
-      vim.keymap.set('n', '<leader>fc', find_file, { noremap = true, unique = true })
       vim.keymap.set('n', '<leader>w', strip_ws, { noremap = true, unique = true })
     end,
   },
@@ -814,7 +891,7 @@ require('lazy').setup({
     },
     config = function()
       require('gitsigns').setup {
-        update_debounce = 100,
+        update_debounce = 50,
       }
       require('scrollbar.handlers.gitsigns').setup()
 
@@ -888,56 +965,11 @@ require('lazy').setup({
         handlers = {
           cursor = true,
           diagnostic = true,
-          gitsigns = true, -- Requires gitsigns
           handle = true,
           search = true, -- Requires hlslens
           ale = false, -- Requires ALE
+          gitsigns = false, -- Requires gitsigns
         },
-      }
-    end,
-  },
-
-  {
-    'lukas-reineke/indent-blankline.nvim',
-    config = function()
-      require('ibl').setup {
-        indent = {
-          char = indent_char,
-          tab_char = indent_char,
-        },
-        scope = { enabled = false },
-        exclude = {
-          filetypes = {
-            'help',
-            'alpha',
-            'dashboard',
-            'neo-tree',
-            'Trouble',
-            'trouble',
-            'lazy',
-            'mason',
-            'notify',
-            'toggleterm',
-            'lazyterm',
-            'exproject',
-          },
-        },
-      }
-    end,
-  },
-
-  {
-    'echasnovski/mini.indentscope',
-    config = function()
-      local mini_is = require('mini.indentscope')
-      mini_is.setup {
-        symbol = indent_char,
-        draw = {
-          delay = 100,
-          animation = mini_is.gen_animation.none(),
-          priority = 2,
-        },
-        options = { try_as_border = true },
       }
     end,
   },
@@ -1154,104 +1186,6 @@ require('lazy').setup({
     },
   },
 
-  -- DELME:
-  -- {
-  --   'hrsh7th/nvim-cmp',
-  --   dependencies = {
-  --     'hrsh7th/cmp-buffer',
-  --     'hrsh7th/cmp-path',
-  --     'hrsh7th/cmp-cmdline',
-  --     'L3MON4D3/LuaSnip',
-  --     'saadparwaiz1/cmp_luasnip',
-  --   },
-  --   config = function()
-  --     local cmp = require('cmp')
-  --     local luasnip = require('luasnip')
-
-  --     cmp.setup {
-  --       completion = {
-  --         completeopt = 'menu,menuone,noselect,noinsert',
-  --       },
-
-  --       mapping = cmp.mapping.preset.insert({
-  --         ['<C-Space>'] = cmp.mapping.complete(),
-  --         ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-  --         ['<C-e>'] = cmp.mapping.abort(),
-  --         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-  --         ['<C-f>'] = cmp.mapping.scroll_docs(4),
-
-  --         -- next
-  --         ['<C-j>'] = cmp.mapping(function()
-  --           if cmp.visible() then
-  --             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-  --           end
-  --         end, { 'i', 's', 'c' }),
-
-  --         -- prev
-  --         ['<C-k>'] = cmp.mapping(function()
-  --           if cmp.visible() then
-  --             cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-  --           end
-  --         end, { 'i', 's', 'c' }),
-
-  --         -- Tab
-  --         ['<Tab>'] = cmp.mapping(function(fallback)
-  --           -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
-  --           if cmp.visible() then
-  --             local entry = cmp.get_selected_entry()
-  --             if not entry then
-  --               cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-  --             end
-  --             cmp.confirm()
-  --           else
-  --             fallback()
-  --           end
-  --         end, { 'i', 's', 'c' }),
-  --       }),
-
-  --       snippet = {
-  --         expand = function(args)
-  --           luasnip.lsp_expand(args.body)
-  --         end,
-  --       },
-
-  --       sources = cmp.config.sources({
-  --         { name = 'nvim_lsp' },
-  --         { name = 'path' },
-  --         { name = 'luasnip' },
-  --       }, {
-  --         { name = 'buffer' },
-  --       })
-  --     }
-
-  --     -- DELME: disable cause it will make cursor jump amongs multiple windows
-  --     -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-  --     -- cmp.setup.cmdline({ '/', '?' }, {
-  --     --   mapping = cmp.mapping.preset.cmdline(),
-  --     --   view = {
-  --     --     entries = { name = 'wildmenu', separator = ' | ' }
-  --     --   },
-  --     --   sources = {
-  --     --     { name = 'buffer' }
-  --     --   }
-  --     -- })
-
-  --     -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-  --     cmp.setup.cmdline(':', {
-  --       mapping = cmp.mapping.preset.cmdline(),
-  --       view = {
-  --         entries = { name = 'wildmenu', separator = ' | ' }
-  --       },
-  --       sources = cmp.config.sources({
-  --         { name = 'path' }
-  --       }, {
-  --         { name = 'cmdline' }
-  --       }),
-  --       matching = { disallow_symbol_nonprefix_matching = false }
-  --     })
-  --   end,
-  -- },
-
   -- NOTE: Use this instead of  nvim-cmp cmdline({ '/', '?' }, ...)
   -- NOTE: nvim-cmp will random jump cursor when working with ex-gsearch window
   'exvim/ex-searchcompl',
@@ -1263,11 +1197,9 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- 'hrsh7th/cmp-nvim-lsp', -- DELME:
       'saghen/blink.cmp'
     },
     config = function()
-      -- local capabilities = require('cmp_nvim_lsp').default_capabilities() -- DELME:
       local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       vim.lsp.config('clangd', {
@@ -1386,114 +1318,10 @@ require('lazy').setup({
   -- TODO: https://github.com/neomake/neomake
 
   ------------------------------
-  -- file operation
-  ------------------------------
-
-  {
-    'nvim-telescope/telescope.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim'
-    },
-    config = function()
-      local telescope = require('telescope')
-      local builtin = require('telescope.builtin')
-      local themes = require('telescope.themes')
-
-      -- TODO: support other platform
-      telescope.setup {
-        defaults = {
-          file_ignore_patterns = {
-            '**/*.meta',
-            '^[Bb]uild\\',
-            '^[Ll]ibrary\\',
-            '^[Ll]ogs\\',
-            '^[Oo]bj\\',
-            '^[Tt]emp\\',
-          }
-        }
-      }
-
-      local function find_files()
-        builtin.find_files(themes.get_dropdown({
-          hidden = false,
-          no_ignore = true,
-          no_ignore_parent = false,
-        }))
-      end
-
-      vim.keymap.set('n', '<C-p>', find_files, {})
-      -- vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-      -- vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-      -- vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-    end
-  },
-
-  {
-    'nvim-tree/nvim-tree.lua',
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-    },
-    config = function()
-      vim.g.loaded_netrw = 1
-      vim.g.loaded_netrwPlugin = 1
-      vim.opt.termguicolors = true
-
-      local view = require('nvim-tree.view')
-      local win_size = 30
-      local win_size_zoom = 60
-
-      local function toggle_zoom()
-        local win = view.get_winnr() or 0
-        local cur_size = vim.api.nvim_win_get_width(win)
-
-        if cur_size == win_size then
-          view.resize(win_size_zoom)
-        elseif cur_size == win_size_zoom then
-          view.resize(win_size)
-        elseif cur_size > win_size_zoom then
-          view.resize(win_size_zoom)
-        else
-          view.resize(win_size)
-        end
-      end
-
-      require('nvim-tree').setup {
-        sort_by = 'case_sensitive',
-        view = {
-          width = win_size,
-        },
-        renderer = {
-          group_empty = true,
-        },
-        git = {
-          show_on_dirs = true,
-        },
-        filters = {
-          git_ignored = false,
-          dotfiles = true,
-        },
-        on_attach = function(bufnr)
-          local api = require('nvim-tree.api')
-
-          local function opts(desc)
-            return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-          end
-
-          -- default mappings
-          api.config.mappings.default_on_attach(bufnr)
-
-          -- custom mappings
-          vim.keymap.set('n', '<F1>',    api.tree.toggle_help, opts('Help'))
-          vim.keymap.set('n', '<Space>', toggle_zoom, opts('Resize window'))
-        end,
-      }
-    end
-  },
-
-  ------------------------------
   -- text editing
   ------------------------------
 
+  -- DELME:
   {
     'tpope/vim-commentary',
     config = function()
@@ -1535,10 +1363,16 @@ require('lazy').setup({
     end,
   },
 
+  -- DELME:
   {
     'jwu/vim-better-whitespace',
     init = function()
       vim.g.better_whitespace_guicolor = 'darkred'
+      -- TODO: use the opt.list instead
+      -- -- whitespace trail
+      -- vim.opt.list = true
+      -- vim.opt.listchars:append({ trail = '·' })
+      -- vim.api.nvim_set_hl(0, 'NonText', { fg = '#FF0000' })
     end,
   },
 
