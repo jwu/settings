@@ -1170,7 +1170,14 @@ require('lazy').setup({
           ['<Up>'] = { 'select_prev', 'fallback' },
           ['<Down>'] = { 'select_next', 'fallback' },
         },
-        sources = { 'buffer', 'cmdline' },
+        sources = function()
+          -- disable search completion (we use ex-searchcompl instead)
+          local cmdtype = vim.fn.getcmdtype()
+          if cmdtype == '/' or cmdtype == '?' then
+            return {}  -- No sources for search mode
+          end
+          return { 'cmdline', 'buffer' }
+        end,
         completion = {
           menu = { auto_show = false },
           ghost_text = { enabled = true },
@@ -1184,8 +1191,8 @@ require('lazy').setup({
     },
   },
 
-  -- NOTE: Use this instead of  nvim-cmp cmdline({ '/', '?' }, ...)
-  -- NOTE: nvim-cmp will random jump cursor when working with ex-gsearch window
+  -- NOTE: Use this instead of blink.cmp cmdline
+  -- NOTE: blink.cmp will show a list menu which I don't like
   'exvim/ex-searchcompl',
 
   ------------------------------
