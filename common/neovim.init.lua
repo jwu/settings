@@ -42,6 +42,7 @@ if vim.g.neovide then
   -- others
   vim.g.neovide_hide_mouse_when_typing = true
   vim.g.neovide_input_ime = false
+  vim.g.neovide_input_macos_option_key_is_meta = 'only_left' -- set to true to make sure M-1 works
 
   -- IME only work in Insert Mode
   local function set_ime(args)
@@ -973,7 +974,9 @@ require('lazy').setup({
   -- text highlight
   ------------------------------
 
-  'exvim/ex-easyhl',
+  {
+    'exvim/ex-easyhl',
+  },
 
   {
     'exvim/ex-showmarks',
