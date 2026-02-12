@@ -676,7 +676,7 @@ require('lazy').setup({
         },
         refresh = 50, -- refresh at most every 50ms,
       },
-      words = { enabled = true },
+      words = { enabled = false },
     },
     keys = {
       -- finder
@@ -1321,18 +1321,16 @@ require('lazy').setup({
   -- text editing
   ------------------------------
 
-  -- DELME:
   {
-    'tpope/vim-commentary',
-    config = function()
-      vim.keymap.set('x', '<leader>/', '<Plug>Commentary')
-      vim.keymap.set('n', '<leader>/', '<Plug>CommentaryLine')
-
-      vim.api.nvim_create_autocmd({'FileType'}, {
-        pattern = {'cs'},
-        command = [[setlocal commentstring=\/\/\ %s]],
-      })
-    end,
+    'numToStr/Comment.nvim',
+    opts = {
+      toggler = {
+        line = '<leader>/'
+      },
+      opleader = {
+        line = '<leader>/',
+      }
+    }
   },
 
   {
