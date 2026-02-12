@@ -8,13 +8,15 @@ local is_linux = jit.os == 'Linux'
 
 -- color16 settings
 local is_color16 = false
+if is_linux then
+  is_color16 = vim.env.TERM == 'linux'
+end
 
 -- snacks settings
 local indent_char = '▏'
 local snacks_scroll = true
 
-if is_linux then
-  is_color16 = vim.env.TERM == 'linux'
+if is_color16 then
   indent_char = '|'
 end
 
