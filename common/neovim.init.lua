@@ -8,7 +8,10 @@ local is_linux = jit.os == 'Linux'
 
 -- color16 settings
 local is_color16 = false
+
+-- snacks settings
 local indent_char = '▏'
+local snacks_scroll = true
 
 if is_linux then
   is_color16 = vim.env.TERM == 'linux'
@@ -172,8 +175,9 @@ vim.opt.autochdir = false -- no autochchdir
 
 if is_win then
   if vim.g.neovide then
-    vim.g.neovide_scroll_animation_length = 0.3
-    vim.g.neovide_scroll_animation_far_lines = 0.3
+    vim.g.neovide_scroll_animation_length = 0.2
+    vim.g.neovide_scroll_animation_far_lines = 0.2
+    snacks_scroll = false
   end
 
   vim.opt.guifont = 'FiraMono Nerd Font,Microsoft YaHei Mono:h12'
@@ -647,7 +651,7 @@ require('lazy').setup({
       quickfile = { enabled = true },
       scope = { enabled = true },
       scroll = {
-        enabled = true,
+        enabled = snacks_scroll,
         animate = {
           duration = { step = 5, total = 50 },
           easing = 'linear',
