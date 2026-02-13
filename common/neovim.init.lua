@@ -981,7 +981,18 @@ require('lazy').setup({
   ------------------------------
 
   {
-    'exvim/ex-easyhl',
+    'jwu/easyhl.nvim',
+    event = 'VeryLazy',
+    config = function()
+      require('easyhl').setup({
+        colors = {
+          EasyHLLabel1 = { bg = 'DarkRed' },
+          EasyHLLabel2 = { bg = 'DarkMagenta' },
+          EasyHLLabel3 = { bg = 'DarkBlue' },
+          EasyHLLabel4 = { bg = 'DarkGreen' },
+        },
+      })
+    end,
   },
 
   {
