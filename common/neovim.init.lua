@@ -619,13 +619,16 @@ require('lazy').setup({
         enabled = true,
       },
       indent = {
+        enabled = true,
         indent = {
           enabled = true,
-          char = indent_char
+          char = indent_char,
+          hl = 'IndentLine',
         },
         scope = {
           enabled = true, -- enable highlighting the current scope
-          char = indent_char
+          char = indent_char,
+          hl = 'SnacksIndentScope', -- 'IndentLineCurrent'
         },
         animate= {
           enabled = false
