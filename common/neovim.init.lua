@@ -562,12 +562,6 @@ require('lazy').setup({
         -- Custom Highlights --
         colors = {},
         highlights = {
-          -- exvim/ex-easyhl
-          ['EX_HL_label1'] = { bg = 'darkred'},
-          ['EX_HL_label2'] = { bg = 'darkmagenta'},
-          ['EX_HL_label3'] = { bg = 'darkblue'},
-          ['EX_HL_label4'] = { bg = 'darkgreen'},
-
           -- 'exvim/ex-showmarks'
           ['ShowMarksHLl'] = { bg = 'slateblue', fmt = 'none' },
           ['ShowMarksHLu'] = { fg = 'darkred', bg = 'lightred', fmt = 'bold' },
