@@ -160,7 +160,6 @@ vim.opt.updatetime = 1000 -- default = 4000
 vim.opt.autoread = true -- auto read same-file change (better for vc/vim change)
 vim.opt.maxmempattern = 1000 -- enlarge maxmempattern from 1000 to ... (2000000 will give it without limit)
 
-
 -- /////////////////////////////////////////////////////////////////////////////
 -- Variable settings (set all)
 -- /////////////////////////////////////////////////////////////////////////////
@@ -571,6 +570,11 @@ require('lazy').setup({
       }
       require('onedark').load()
 
+      -- color16 setup
+      if is_color16 then
+        vim.cmd.colorscheme('base16-onedark')
+      end
+
       -- setup neovide window-title color after onedark loaded
       if vim.g.neovide then
         vim.g.neovide_title_background_color = string.format(
@@ -581,11 +585,6 @@ require('lazy').setup({
           '%x',
           vim.api.nvim_get_hl(0, {id=vim.api.nvim_get_hl_id_by_name('Normal')}).fg
         )
-      end
-
-      -- color16 setup
-      if is_color16 then
-        vim.cmd.colorscheme('base16-onedark')
       end
     end
   },
@@ -700,11 +699,6 @@ require('lazy').setup({
   {
     'jwu/exvim-lite',
     config = function()
-      local function strip_ws()
-        vim.cmd('StripWhitespace')
-        print('whitespace striped!')
-      end
-
       -- buffer operation
       -- vim.keymap.set('n', '<leader>bd', ':EXbd<CR>', { noremap = true, silent = true, unique = true })
       vim.keymap.del('n', '<C-l>')
@@ -720,9 +714,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>F', ':GS<space>', { noremap = true, unique = true })
       vim.keymap.set('n', '<leader>gg', ':EXSearchCWord<CR>', { noremap = true, unique = true })
       vim.keymap.set('n', '<leader>gs', ':call ex#search#toggle_window()<CR>', { noremap = true, unique = true })
-
-      -- plugin hotkey
-      vim.keymap.set('n', '<leader>w', strip_ws, { noremap = true, unique = true })
     end,
   },
 
@@ -1113,7 +1104,6 @@ require('lazy').setup({
     end,
   },
 
-
   'tikhomirov/vim-glsl',
   'drichardson/vex.vim',
   'cespare/vim-toml',
@@ -1295,7 +1285,7 @@ require('lazy').setup({
           -- NOTE: format file will strip whitespace first.
           -- this is because some fmt don't handle whitespace trim well.
           vim.keymap.set('n', '<leader>ff', function()
-            vim.cmd('StripWhitespace')
+            vim.cmd('Trim')
             vim.lsp.buf.format { async = true }
             print('file formatted!')
           end, opts)
@@ -1355,44 +1345,45 @@ require('lazy').setup({
   },
 
   {
-    'tpope/vim-surround',
+    'kylechui/nvim-surround',
+    event = 'VeryLazy',
     config = function()
-      vim.keymap.set('x', 's', '<Plug>VSurround')
-    end,
+      require('nvim-surround').setup({
+        keymaps = {
+          visual = 's',
+        },
+      })
+    end
   },
 
-  'vim-scripts/VisIncr',
   {
-    'godlygeek/tabular',
+    'jwu/trim.nvim',
     config = function()
-      vim.cmd([[
-        function! g:Tabular(ignore_range) range
-          let c = getchar()
-          let c = nr2char(c)
-          if a:ignore_range == 0
-            exec printf('%d,%dTabularize /%s', a:firstline, a:lastline, c)
-          else
-            exec printf('Tabularize /%s', c)
-          endif
-        endfunction
-      ]])
+      require('trim').setup({
+        ft_blocklist = {
+          'snacks_dashboard'
+        },
+        patterns = {
+          [[%s/\(\n\n\)\n\+/\1/]], -- replace multiple blank lines with a single line
+        },
+        trim_on_write = false,
+        trim_trailing = true,
+        trim_last_line = true,
+        trim_first_line = true,
+        trim_current_line = true,
+        highlight = true,
+        highlight_bg = 'DarkRed',
+        highlight_ctermbg = 'DarkRed',
+        notifications = false,
+      })
 
-      vim.keymap.set('n', '<leader>=', ':call g:Tabular(1)<CR>', { noremap = true, silent = true })
-      vim.keymap.set('x', '<leader>=', ':call g:Tabular(0)<CR>', { noremap = true, silent = true })
-    end,
-  },
-
-  -- DELME:
-  {
-    'jwu/vim-better-whitespace',
-    init = function()
-      vim.g.better_whitespace_guicolor = 'darkred'
-      -- TODO: use the opt.list instead
-      -- -- whitespace trail
-      -- vim.opt.list = true
-      -- vim.opt.listchars:append({ trail = '·' })
-      -- vim.api.nvim_set_hl(0, 'NonText', { fg = '#FF0000' })
-    end,
+      -- trim whitespace
+      local function trim_ws()
+        vim.cmd('Trim')
+        print('Trimmed trailing whitespace and empty lines!')
+      end
+      vim.keymap.set('n', '<leader>w', trim_ws, { noremap = true, unique = true })
+    end
   },
 
   ------------------------------
