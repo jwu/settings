@@ -561,11 +561,6 @@ require('lazy').setup({
 
         -- Custom Highlights --
         colors = {},
-        highlights = {
-          -- 'exvim/ex-showmarks'
-          ['ShowMarksHLl'] = { bg = 'slateblue', fmt = 'none' },
-          ['ShowMarksHLu'] = { fg = 'darkred', bg = 'lightred', fmt = 'bold' },
-        },
 
         -- Plugins Config --
         diagnostics = {
@@ -993,18 +988,25 @@ require('lazy').setup({
   },
 
   {
-    'exvim/ex-showmarks',
-    init = function()
-      vim.g.showmarks_enable = 1
-      vim.g.showmarks_include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    'jwu/showmarks.nvim',
+    config = function()
+      require('showmarks').setup({
+        enable = true,               -- Enable on startup
+        include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', -- Marks to show
+        ignore_type = 'hqm',         -- Buffer types to ignore (h=help, q=quickfix, p=preview, r=readonly, m=non-modifiable)
+        textlower = '>',             -- Display format for a-z marks
+        textupper = '>',             -- Display format for A-Z marks
+        textother = '>',             -- Display format for other marks
+        hlline_lower = true,         -- Highlight entire line for lowercase marks
+        hlline_upper = true,        -- Highlight entire line for uppercase marks
+        hlline_other = false,        -- Highlight entire line for other marks
+      })
 
-      -- Ignore help, quickfix, non-modifiable buffers
-      vim.g.showmarks_ignore_type = 'hqm'
-
-      -- Hilight lower & upper marks
-      vim.g.showmarks_hlline_lower = 1
-      vim.g.showmarks_hlline_upper = 0
-    end,
+      vim.api.nvim_set_hl(0, 'ShowMarksHLl', { bg = 'SlateBlue' })
+      vim.api.nvim_set_hl(0, 'ShowMarksHLu', { bg = 'LightRed', fg = 'DarkRed', bold = true })
+      vim.api.nvim_set_hl(0, 'ShowMarksHLlLine', { bg = 'SlateBlue' })
+      vim.api.nvim_set_hl(0, 'ShowMarksHLuLine', { bg = 'LightRed' })
+    end
   },
 
   {
