@@ -33,6 +33,10 @@ if vim.g.neovide then
   vim.g.neovide_text_contrast = 0.5
   vim.g.neovide_underline_stroke_scale = 1.0
 
+  -- appearance
+  vim.g.neovide_floating_shadow = false
+  vim.g.neovide_floating_corner_radius = 0
+
   -- animation
   vim.g.neovide_position_animation_length = 0.3
   vim.g.neovide_scroll_animation_length = 0.0
@@ -175,11 +179,12 @@ vim.opt.wrap = false -- do not wrap text
 vim.opt.autochdir = false -- no autochchdir
 
 if is_win then
-  if vim.g.neovide then
-    vim.g.neovide_scroll_animation_length = 0.2
-    vim.g.neovide_scroll_animation_far_lines = 0.2
-    snacks_scroll = false
-  end
+  -- DISABLE
+  -- if vim.g.neovide then
+  --   vim.g.neovide_scroll_animation_length = 0.2
+  --   vim.g.neovide_scroll_animation_far_lines = 0.2
+  --   snacks_scroll = false
+  -- end
 
   vim.opt.guifont = 'FiraMono Nerd Font,Microsoft YaHei Mono:h12'
 elseif is_mac then
@@ -870,19 +875,31 @@ require('lazy').setup({
 
   {
     'petertriho/nvim-scrollbar',
+    event = { 'BufReadPost', 'BufNewFile' },
     dependencies = {
-      'kevinhwang91/nvim-hlslens',
-      'lewis6991/gitsigns.nvim',
+      -- gitsigns setup
+      {
+        'lewis6991/gitsigns.nvim',
+        config = function ()
+          require('gitsigns').setup {
+            update_debounce = 50,
+          }
+        end
+      },
+
+      -- hlslens setup
+      {
+        'kevinhwang91/nvim-hlslens',
+        config = function ()
+          require('hlslens').setup()
+        end
+      }
     },
     config = function()
-      require('gitsigns').setup {
-        update_debounce = 50,
-      }
       require('scrollbar.handlers.gitsigns').setup()
-
-      require('scrollbar.handlers.search').setup {
+      require('scrollbar.handlers.search').setup({
         override_lens = function() end, -- leave only search marks and disable virtual text
-      }
+      })
 
       require('scrollbar').setup {
         show = true,
@@ -891,59 +908,49 @@ require('lazy').setup({
         folds = 1000, -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
         max_lines = false, -- disables if no. of lines in buffer exceeds this
         hide_if_all_visible = false, -- Hides everything if all lines are visible
-        throttle_ms = 100,
+        throttle_ms = 100, -- default 100ms
         handle = {
           text = ' ',
-          blend = 30, -- Integer between 0 and 100. 0 for fully opaque and 100 to full transparent. Defaults to 30.
+          blend = 10, -- Integer between 0 and 100. 0 for fully opaque and 100 to full transparent. Defaults to 30.
           color = nil,
           color_nr = nil, -- cterm
-          highlight = 'Tabline',
+          highlight = 'StatusLine', -- 'TabLine', 'CursorColumn'
           hide_if_all_visible = true, -- Hides handle if all lines are visible
         },
         marks = {
           Cursor = {
             text = '•',
             priority = 0,
-            gui = nil,
-            color = nil,
-            cterm = nil,
-            color_nr = nil, -- cterm
             highlight = 'Normal',
           },
           Search = {
-            text = { '-', '=' },
+            text = { '─', '═' }, -- text = { '-', '=' },
             priority = 1,
-            gui = nil,
-            color = nil,
-            cterm = nil,
-            color_nr = nil, -- cterm
-            highlight = 'Type',
+            highlight = 'Keyword',
+          },
+          Error = {
+            text = { 'x' }, -- text = { '-', '=' },
+            priority = 2,
+            highlight = 'DiagnosticError',
+          },
+          Warn = {
+            text = { '!' }, -- text = { '-', '=' },
+            priority = 3,
+            highlight = 'DiagnosticWarn',
           },
           GitAdd = {
-            text = '┆',
+            text = '│', -- text = '┆',
             priority = 7,
-            gui = nil,
-            color = nil,
-            cterm = nil,
-            color_nr = nil, -- cterm
             highlight = 'GitSignsAdd',
           },
           GitChange = {
-            text = '┆',
+            text = '│', -- text = '┆',
             priority = 7,
-            gui = nil,
-            color = nil,
-            cterm = nil,
-            color_nr = nil, -- cterm
             highlight = 'GitSignsChange',
           },
           GitDelete = {
-            text = '▁',
+            text = '_', -- text = '▁',
             priority = 7,
-            gui = nil,
-            color = nil,
-            cterm = nil,
-            color_nr = nil, -- cterm
             highlight = 'GitSignsDelete',
           },
         },
@@ -952,8 +959,8 @@ require('lazy').setup({
           diagnostic = true,
           handle = true,
           search = true, -- Requires hlslens
+          gitsigns = true, -- Requires gitsigns
           ale = false, -- Requires ALE
-          gitsigns = false, -- Requires gitsigns
         },
       }
     end,
