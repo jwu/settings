@@ -577,7 +577,7 @@ require('lazy').setup({
 
       -- color16 setup
       if is_color16 then
-        vim.cmd.colorscheme('base16-onedark')
+        vim.cmd.colorscheme('base16-3024')
       end
 
       -- setup neovide window-title color after onedark loaded
