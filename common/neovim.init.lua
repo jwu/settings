@@ -79,15 +79,15 @@ end
 
 -- DELME: {
 local function OSX()
-  return vim.uv.os_uname().sysname == 'Darwin'
+  return is_mac
 end
 
 local function LINUX()
-  return vim.uv.os_uname().sysname == 'Linux'
+  return is_linux
 end
 
 local function WINDOWS()
-  return vim.uv.os_uname().sysname == 'Windows_NT'
+  return is_win
 end
 
 _G.OSX = OSX
@@ -460,50 +460,6 @@ vim.api.nvim_create_autocmd({'FileType'}, {
   command = 'set formatoptions-=ro',
 })
 
--- if edit python scripts, check if have \t. (python said: the programme can only use \t or not, but can't use them together)
-vim.api.nvim_create_autocmd({'FileType'}, {
-  group = ex_group,
-  pattern = {'python', 'coffee'},
-  callback = function()
-    local has_noexpandtab = vim.fn.search('^\t','wn')
-    local has_expandtab = vim.fn.search('^    ','wn')
-
-    if has_noexpandtab and has_expandtab then
-      local idx = vim.fn.inputlist({
-        'ERROR: current file exists both expand and noexpand TAB, python can only use one of these two mode in one file.\nSelect Tab Expand Type:',
-        '1. expand (tab=space, recommended)',
-        '2. noexpand (tab=\t, currently have risk)',
-        '3. do nothing (I will handle it by myself)'
-      })
-      local tab_space = vim.fn.printf('%*s',vim.o.tabstop)
-      if idx == 1 then
-        has_noexpandtab = 0
-        has_expandtab = 1
-        vim.cmd('%s/\t/' .. tab_space .. '/g')
-      elseif idx == 2 then
-        has_noexpandtab = 1
-        has_expandtab = 0
-        vim.cmd('%s/' .. tab_space .. '/\t/g')
-      else
-        return
-      end
-    end
-
-    if has_noexpandtab == 1 and has_expandtab == 0 then
-      print('substitute space to TAB...')
-      vim.opt.expandtab = false
-      print('done!')
-    elseif has_noexpandtab == 0 and has_expandtab == 1 then
-      print('substitute space to space...')
-      vim.opt.expandtab = true
-      print('done!')
-    else
-      -- it may be a new file
-      -- we use original vim setting
-    end
-  end,
-})
-
 -- /////////////////////////////////////////////////////////////////////////////
 -- User Commands
 -- /////////////////////////////////////////////////////////////////////////////
@@ -684,6 +640,7 @@ require('lazy').setup({
       { '<leader>e', function() Snacks.explorer() end, desc = 'File Explorer' },
       { '<leader>:', function() Snacks.picker.command_history() end, desc = 'Command History' },
       { '<leader>n', function() Snacks.picker.notifications() end, desc = 'Notification History' },
+      { '<leader>dg', function() Snacks.picker.diagnostics() end, desc = 'Diagnostics' },
 
       -- git
       { '<leader>gl', function() Snacks.picker.git_log() end, desc = 'Git Log' },
