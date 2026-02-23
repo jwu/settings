@@ -32,6 +32,7 @@ config.set_environment_variables = {
   TERM = 'wezterm',
 }
 
+-- NOTE: in clink.lua, we do the same thing, cause alacritty need it
 if ls_colors then
   config.set_environment_variables.LS_COLORS = ls_colors
 end
