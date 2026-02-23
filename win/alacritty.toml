@@ -72,7 +72,7 @@ vi_mode_style = "None"
 style = { blinking = "Off", shape = "Block" }
 
 [font]
-size = 12.5
+size = 12
 normal = { family = "FiraMono Nerd Font", style = "Medium" }
 bold = { family = "FiraMono Nerd Font", style = "Bold" }
 italic = { family = "FiraMono Nerd Font", style = "Italic" }

@@ -193,7 +193,9 @@
   - [Nerd Fonts](https://www.nerdfonts.com/)
   - [Dracula Theme](https://draculatheme.com/)
   - [starship](https://starship.rs/)
-  - [zellij](https://zellij.dev/)
+  - [tmux](https://github.com/tmux/tmux)
+    - [zellij](https://zellij.dev/)
+  - [vivid](https://github.com/sharkdp/vivid)
 - Package Management
   - Windows
     - [winget](https://github.com/microsoft/winget-cli)
