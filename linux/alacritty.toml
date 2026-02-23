@@ -57,7 +57,7 @@ background = "#50fa7b"
 foreground = "#44475a"
 
 [colors.selection]
-background = "#44475a"
+background = "#3b3f4c"
 text = "CellForeground"
 
 [colors.vi_mode_cursor]
