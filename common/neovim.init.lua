@@ -1,4 +1,33 @@
 -- /////////////////////////////////////////////////////////////////////////////
+-- performance optimization
+-- /////////////////////////////////////////////////////////////////////////////
+
+vim.loader.enable()
+
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+local disabled_builtins = {
+  'gzip',
+  'zip',
+  'zipPlugin',
+  'tar',
+  'tarPlugin',
+  'getscript',
+  'getscriptPlugin',
+  'vimball',
+  'vimballPlugin',
+  '2html_plugin',
+  'logipat',
+  'rrhelper',
+  'spellfile_plugin',
+}
+for _, p in pairs(disabled_builtins) do
+  vim.g['loaded_' .. p] = 1
+end
+
+-- /////////////////////////////////////////////////////////////////////////////
 -- basic
 -- /////////////////////////////////////////////////////////////////////////////
 
@@ -66,7 +95,7 @@ if vim.g.neovide then
   vim.api.nvim_create_autocmd({ 'InsertEnter', 'InsertLeave' }, {
     group = ime_input,
     pattern = '*',
-    callback = set_ime
+    callback = set_ime,
   })
 
   -- NOTE: Disabled
@@ -160,9 +189,10 @@ vim.opt.directory = vim.env.HOME .. '/.data/swap' -- where to put swap file
 -- Redefine the shell redirection operator to receive both the stderr messages and stdout messages
 vim.opt.shellredir = '>%s 2>&1'
 vim.opt.history = 50 -- keep 50 lines of command line history
-vim.opt.updatetime = 1000 -- default = 4000
+vim.opt.updatetime = 250 -- default = 4000
 vim.opt.autoread = true -- auto read same-file change (better for vc/vim change)
 vim.opt.maxmempattern = 1000 -- enlarge maxmempattern from 1000 to ... (2000000 will give it without limit)
+vim.opt.timeoutlen = 300 -- time to wait for a mapped sequence to complete
 
 -- /////////////////////////////////////////////////////////////////////////////
 -- Variable settings (set all)
@@ -174,9 +204,10 @@ vim.opt.maxmempattern = 1000 -- enlarge maxmempattern from 1000 to ... (2000000 
 
 vim.opt.matchtime = 0 -- 0 second to show the matching paren (much faster)
 vim.opt.number = true -- show line number
-vim.opt.scrolloff = 0 -- minimal number of screen lines to keep above and below the cursor
+vim.opt.scrolloff = 8 -- minimal number of screen lines to keep above and below the cursor
 vim.opt.wrap = false -- do not wrap text
 vim.opt.autochdir = false -- no autochchdir
+vim.opt.synmaxcol = 240 -- only highlight first 240 columns for performance
 
 if is_win then
   -- DISABLE
@@ -214,7 +245,7 @@ vim.opt.titlestring = '%t (%{expand("%:p:h")})'
 -- vim.opt.lines = 40
 -- vim.opt.columns = 130
 vim.opt.showfulltag = true -- show tag with function protype.
-vim.opt.signcolumn = 'auto'
+vim.opt.signcolumn = 'yes'
 
 vim.opt.mousemoveevent = true
 
@@ -238,8 +269,8 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.WARN] = ' ',
       [vim.diagnostic.severity.INFO] = ' ',
       [vim.diagnostic.severity.HINT] = ' ',
-    }
-  }
+    },
+  },
 })
 
 --------------------------------------------------------------------
@@ -252,7 +283,8 @@ vim.opt.backspace = 'indent,eol,start' -- allow backspacing over everything in i
 -- indent options
 -- see help cinoptions-values for more details
 -- set cinoptions=>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,E0,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0
-vim.opt.cinoptions = '>s,e0,n0,f0,{0,}0,^0,L0:0,=s,l0,b0,g0,hs,N0,E0,ps,ts,is,+s,c3,C0,/0,(0,us,U0,w0,Ws,m1,M0,j1,J1,)20,*70,#0'
+vim.opt.cinoptions =
+  '>s,e0,n0,f0,{0,}0,^0,L0:0,=s,l0,b0,g0,hs,N0,E0,ps,ts,is,+s,c3,C0,/0,(0,us,U0,w0,Ws,m1,M0,j1,J1,)20,*70,#0'
 -- default '0{,0},0),:,0#,!^F,o,O,e' disable 0# for not ident preprocess
 -- set cinkeys=0{,0},0),:,!^F,o,O,e
 
@@ -275,7 +307,8 @@ vim.opt.completeopt = 'menu,menuone,noinsert,noselect'
 vim.opt.foldmethod = 'marker'
 vim.opt.foldmarker = '{,}'
 vim.opt.foldlevel = 9999
-vim.opt.diffopt = { 'internal', 'filler', 'closeoff', 'algorithm:histogram', 'indent-heuristic', 'linematch:60', 'context:9999' }
+vim.opt.diffopt =
+  { 'internal', 'filler', 'closeoff', 'algorithm:histogram', 'indent-heuristic', 'linematch:60', 'context:9999' }
 
 --------------------------------------------------------------------
 -- Desc: Search
@@ -373,7 +406,7 @@ local ex_group = vim.api.nvim_create_augroup('ex', { clear = true })
 -- (happens when dropping a file on gvim).
 vim.api.nvim_create_autocmd('BufReadPost', {
   group = ex_group,
-  pattern = {'*'},
+  pattern = { '*' },
   callback = function()
     local mark = vim.api.nvim_buf_get_mark(0, '"')
     local lcount = vim.api.nvim_buf_line_count(0)
@@ -384,31 +417,31 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 })
 
 -- NOTE: ctags find the tags file from the current path instead of the path of currect file
-vim.api.nvim_create_autocmd({'BufNewFile', 'BufEnter'}, {
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufEnter' }, {
   group = ex_group,
-  pattern = {'*'},
+  pattern = { '*' },
   command = 'set cpoptions+=d',
 })
 
 -- ensure every file does syntax highlighting (full)
-vim.api.nvim_create_autocmd({'BufEnter'}, {
+vim.api.nvim_create_autocmd({ 'BufEnter' }, {
   group = ex_group,
-  pattern = {'*'},
+  pattern = { '*' },
   command = 'syntax sync fromstart',
 })
-vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
   group = ex_group,
-  pattern = {'*.hlsl', '*.shader', '*.cg', '*.cginc', '*.vs', '*.fs', '*.fx', '*.fxh', '*.vsh', '*.psh', '*.shd'},
+  pattern = { '*.hlsl', '*.shader', '*.cg', '*.cginc', '*.vs', '*.fs', '*.fx', '*.fxh', '*.vsh', '*.psh', '*.shd' },
   command = 'set ft=hlsl',
 })
-vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
   group = ex_group,
-  pattern = {'*.glsl'},
+  pattern = { '*.glsl' },
   command = 'set ft=glsl',
 })
-vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
   group = ex_group,
-  pattern = {'*.avs'},
+  pattern = { '*.avs' },
   command = 'set syntax=avs',
 })
 
@@ -417,46 +450,46 @@ vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
 --------------------------------------------------------------------
 
 -- for all text files set 'textwidth' to 78 characters.
-vim.api.nvim_create_autocmd({'FileType'}, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   group = ex_group,
-  pattern = {'text'},
+  pattern = { 'text' },
   command = 'setlocal textwidth=78',
 })
 
 -- this will avoid bug in my project with namespace ex, the vim will tree ex:: as modeline.
 -- au FileType c,cpp,cs,swig set nomodeline
-vim.api.nvim_create_autocmd({'FileType'}, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   group = ex_group,
-  pattern = {'c', 'cpp', 'cs', 'swig'},
+  pattern = { 'c', 'cpp', 'cs', 'swig' },
   command = 'set nomodeline',
 })
 
 -- disable auto-comment for c/cpp, lua, javascript, c# and vim-script
-vim.api.nvim_create_autocmd({'FileType'}, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   group = ex_group,
-  pattern = {'c', 'cpp', 'java', 'javascript'},
+  pattern = { 'c', 'cpp', 'java', 'javascript' },
   command = [[set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f://]],
 })
-vim.api.nvim_create_autocmd({'FileType'}, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   group = ex_group,
-  pattern = {'cs'},
+  pattern = { 'cs' },
   command = [[set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f:///,f://]],
 })
-vim.api.nvim_create_autocmd({'FileType'}, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   group = ex_group,
-  pattern = {'vim'},
+  pattern = { 'vim' },
   command = [[set comments=sO:\"\ -,mO:\"\ \ ,eO:\"\",f:\"]],
 })
-vim.api.nvim_create_autocmd({'FileType'}, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   group = ex_group,
-  pattern = {'lua'},
+  pattern = { 'lua' },
   command = [[set comments=f:--]],
 })
 
 -- disable automaticaly insert current comment leader after hitting <Enter>, 'o' or 'O'
-vim.api.nvim_create_autocmd({'FileType'}, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   group = ex_group,
-  pattern = {'c', 'cpp', 'cs', 'rust', 'vim'},
+  pattern = { 'c', 'cpp', 'cs', 'rust', 'vim' },
   command = 'set formatoptions-=ro',
 })
 
@@ -466,10 +499,7 @@ vim.api.nvim_create_autocmd({'FileType'}, {
 
 -- FIXME:
 vim.api.nvim_create_user_command('SH', function()
-  vim.fn.jobstart(
-    { 'd:\\alacritty\\alacritty', '--working-directory', vim.fn.expand('%:p:h') },
-    { detach = true }
-  )
+  vim.fn.jobstart({ 'd:\\alacritty\\alacritty', '--working-directory', vim.fn.expand('%:p:h') }, { detach = true })
 end, {})
 
 -- /////////////////////////////////////////////////////////////////////////////
@@ -499,7 +529,7 @@ require('lazy').setup({
     priority = 100,
     dependencies = { 'RRethy/base16-nvim' },
     config = function()
-      require('onedark').setup {
+      require('onedark').setup({
         style = 'dark',
         transparent = false,
         term_colors = true,
@@ -512,7 +542,7 @@ require('lazy').setup({
           keywords = 'none',
           functions = 'none',
           strings = 'none',
-          variables = 'none'
+          variables = 'none',
         },
 
         lualine = {
@@ -528,7 +558,7 @@ require('lazy').setup({
           undercurl = true,
           background = true,
         },
-      }
+      })
       require('onedark').load()
 
       -- color16 setup
@@ -538,16 +568,12 @@ require('lazy').setup({
 
       -- setup neovide window-title color after onedark loaded
       if vim.g.neovide then
-        vim.g.neovide_title_background_color = string.format(
-          '%x',
-          vim.api.nvim_get_hl(0, {id=vim.api.nvim_get_hl_id_by_name('Normal')}).bg
-        )
-        vim.g.neovide_title_text_color = string.format(
-          '%x',
-          vim.api.nvim_get_hl(0, {id=vim.api.nvim_get_hl_id_by_name('Normal')}).fg
-        )
+        vim.g.neovide_title_background_color =
+          string.format('%x', vim.api.nvim_get_hl(0, { id = vim.api.nvim_get_hl_id_by_name('Normal') }).bg)
+        vim.g.neovide_title_text_color =
+          string.format('%x', vim.api.nvim_get_hl(0, { id = vim.api.nvim_get_hl_id_by_name('Normal') }).fg)
       end
-    end
+    end,
   },
 
   ------------------------------
@@ -585,8 +611,8 @@ require('lazy').setup({
           char = indent_char,
           hl = 'SnacksIndentScope', -- 'IndentLineCurrent'
         },
-        animate= {
-          enabled = false
+        animate = {
+          enabled = false,
         },
       },
       input = { enabled = true },
@@ -594,9 +620,9 @@ require('lazy').setup({
         enabled = true,
         sources = {
           explorer = {
-            jump = { close = true }
-          }
-        }
+            jump = { close = true },
+          },
+        },
       },
       notifier = {
         enabled = true,
@@ -634,22 +660,95 @@ require('lazy').setup({
     },
     keys = {
       -- finder
-      { '<c-p>', function() Snacks.picker.smart() end, desc = 'Smart Find Files' },
-      { 'f/', function() Snacks.picker.files() end, desc = 'Find Files' },
-      { 'g/', function() Snacks.picker.grep() end, desc = 'Grep' },
-      { '<leader>e', function() Snacks.explorer() end, desc = 'File Explorer' },
-      { '<leader>:', function() Snacks.picker.command_history() end, desc = 'Command History' },
-      { '<leader>n', function() Snacks.picker.notifications() end, desc = 'Notification History' },
-      { '<leader>dg', function() Snacks.picker.diagnostics() end, desc = 'Diagnostics' },
+      {
+        '<c-p>',
+        function()
+          Snacks.picker.smart()
+        end,
+        desc = 'Smart Find Files',
+      },
+      {
+        'f/',
+        function()
+          Snacks.picker.files()
+        end,
+        desc = 'Find Files',
+      },
+      {
+        'g/',
+        function()
+          Snacks.picker.grep()
+        end,
+        desc = 'Grep',
+      },
+      {
+        '<leader>e',
+        function()
+          Snacks.explorer()
+        end,
+        desc = 'File Explorer',
+      },
+      {
+        '<leader>:',
+        function()
+          Snacks.picker.command_history()
+        end,
+        desc = 'Command History',
+      },
+      {
+        '<leader>n',
+        function()
+          Snacks.picker.notifications()
+        end,
+        desc = 'Notification History',
+      },
+      {
+        '<leader>dg',
+        function()
+          Snacks.picker.diagnostics()
+        end,
+        desc = 'Diagnostics',
+      },
 
       -- git
-      { '<leader>gl', function() Snacks.picker.git_log() end, desc = 'Git Log' },
-      { '<leader>df', function() Snacks.picker.git_diff() end, desc = 'Git Diff (Hunks)' },
-      { '<leader>gb', function() Snacks.gitbrowse() end, desc = 'Git Browse', mode = { 'n', 'v' } },
+      {
+        '<leader>gl',
+        function()
+          Snacks.picker.git_log()
+        end,
+        desc = 'Git Log',
+      },
+      {
+        '<leader>df',
+        function()
+          Snacks.picker.git_diff()
+        end,
+        desc = 'Git Diff (Hunks)',
+      },
+      {
+        '<leader>gb',
+        function()
+          Snacks.gitbrowse()
+        end,
+        desc = 'Git Browse',
+        mode = { 'n', 'v' },
+      },
 
       -- Buffer
-      { '<leader>bd', function() Snacks.bufdelete() end, desc = 'Delete Buffer' },
-      { '<leader>t', function() Snacks.terminal() end, desc = 'Toggle Terminal' },
+      {
+        '<leader>bd',
+        function()
+          Snacks.bufdelete()
+        end,
+        desc = 'Delete Buffer',
+      },
+      {
+        '<leader>t',
+        function()
+          Snacks.terminal()
+        end,
+        desc = 'Toggle Terminal',
+      },
     },
   },
 
@@ -694,7 +793,7 @@ require('lazy').setup({
         config.options.always_show_bufferline = true
       end
 
-      bufferline.setup {
+      bufferline.setup({
         highlights = {
           buffer_selected = {
             bold = true,
@@ -710,7 +809,7 @@ require('lazy').setup({
           hover = {
             enabled = true,
             delay = 100,
-            reveal = {'close'}
+            reveal = { 'close' },
           },
           offsets = {
             {
@@ -730,10 +829,10 @@ require('lazy').setup({
               highlight = 'Directory',
               separator = true,
               text_align = 'left',
-            }
-          }
+            },
+          },
         },
-      }
+      })
     end,
   },
 
@@ -751,7 +850,7 @@ require('lazy').setup({
         return 'Search Results'
       end
 
-      require('lualine').setup {
+      require('lualine').setup({
         options = {
           icons_enabled = true,
           theme = 'onedark',
@@ -768,64 +867,64 @@ require('lazy').setup({
             statusline = 1000,
             tabline = 1000,
             winbar = 1000,
-          }
+          },
         },
         sections = {
-          lualine_a = {'mode'},
-          lualine_b = {'branch'},
-          lualine_c = {'filename'},
-          lualine_x = {'filetype'},
-          lualine_y = {'encoding', 'fileformat'},
-          lualine_z = {'progress', 'location'}
+          lualine_a = { 'mode' },
+          lualine_b = { 'branch' },
+          lualine_c = { 'filename' },
+          lualine_x = { 'filetype' },
+          lualine_y = { 'encoding', 'fileformat' },
+          lualine_z = { 'progress', 'location' },
           -- lualine_z = {lineinfo}
         },
         inactive_sections = {
           lualine_a = {},
           lualine_b = {},
-          lualine_c = {'filename'},
-          lualine_x = {'filetype'},
-          lualine_y = {'encoding', 'fileformat'},
-          lualine_z = {'progress', 'location'}
+          lualine_c = { 'filename' },
+          lualine_x = { 'filetype' },
+          lualine_y = { 'encoding', 'fileformat' },
+          lualine_z = { 'progress', 'location' },
         },
         tabline = {},
         winbar = {},
         inactive_winbar = {},
         extensions = {
           {
-            filetypes = {'exproject', 'NvimTree'},
+            filetypes = { 'exproject', 'NvimTree' },
             sections = {
-              lualine_a = {projectinfo},
-              lualine_b = {'progress'},
-              lualine_c = {'location'},
+              lualine_a = { projectinfo },
+              lualine_b = { 'progress' },
+              lualine_c = { 'location' },
               lualine_x = {},
               lualine_y = {},
-              lualine_z = {}
-            }
+              lualine_z = {},
+            },
           },
           {
-            filetypes = {'exsearch'},
+            filetypes = { 'exsearch' },
             sections = {
-              lualine_a = {searchinfo},
-              lualine_b = {'progress'},
-              lualine_c = {'location'},
+              lualine_a = { searchinfo },
+              lualine_b = { 'progress' },
+              lualine_c = { 'location' },
               lualine_x = {},
               lualine_y = {},
-              lualine_z = {}
-            }
+              lualine_z = {},
+            },
           },
-        }
-      }
+        },
+      })
 
       -- color16 setup
       if is_color16 then
-        require('lualine').setup{
+        require('lualine').setup({
           options = {
             icons_enabled = false,
             theme = '16color',
             component_separators = { left = '', right = '' },
             section_separators = { left = '', right = '' },
-          }
-        }
+          },
+        })
       end
     end,
   },
@@ -837,20 +936,20 @@ require('lazy').setup({
       -- gitsigns setup
       {
         'lewis6991/gitsigns.nvim',
-        config = function ()
-          require('gitsigns').setup {
+        config = function()
+          require('gitsigns').setup({
             update_debounce = 50,
-          }
-        end
+          })
+        end,
       },
 
       -- hlslens setup
       {
         'kevinhwang91/nvim-hlslens',
-        config = function ()
+        config = function()
           require('hlslens').setup()
-        end
-      }
+        end,
+      },
     },
     config = function()
       require('scrollbar.handlers.gitsigns').setup()
@@ -858,7 +957,7 @@ require('lazy').setup({
         override_lens = function() end, -- leave only search marks and disable virtual text
       })
 
-      require('scrollbar').setup {
+      require('scrollbar').setup({
         show = true,
         show_in_active_only = false,
         set_highlights = true,
@@ -919,7 +1018,7 @@ require('lazy').setup({
           gitsigns = true, -- Requires gitsigns
           ale = false, -- Requires ALE
         },
-      }
+      })
     end,
   },
 
@@ -946,22 +1045,22 @@ require('lazy').setup({
     'jwu/showmarks.nvim',
     config = function()
       require('showmarks').setup({
-        enable = true,               -- Enable on startup
+        enable = true, -- Enable on startup
         include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', -- Marks to show
-        ignore_type = 'hqm',         -- Buffer types to ignore (h=help, q=quickfix, p=preview, r=readonly, m=non-modifiable)
-        textlower = '>',             -- Display format for a-z marks
-        textupper = '>',             -- Display format for A-Z marks
-        textother = '>',             -- Display format for other marks
-        hlline_lower = true,         -- Highlight entire line for lowercase marks
-        hlline_upper = true,        -- Highlight entire line for uppercase marks
-        hlline_other = false,        -- Highlight entire line for other marks
+        ignore_type = 'hqm', -- Buffer types to ignore (h=help, q=quickfix, p=preview, r=readonly, m=non-modifiable)
+        textlower = '>', -- Display format for a-z marks
+        textupper = '>', -- Display format for A-Z marks
+        textother = '>', -- Display format for other marks
+        hlline_lower = true, -- Highlight entire line for lowercase marks
+        hlline_upper = true, -- Highlight entire line for uppercase marks
+        hlline_other = false, -- Highlight entire line for other marks
       })
 
       vim.api.nvim_set_hl(0, 'ShowMarksHLl', { bg = 'SlateBlue' })
       vim.api.nvim_set_hl(0, 'ShowMarksHLu', { bg = 'LightRed', fg = 'DarkRed', bold = true })
       vim.api.nvim_set_hl(0, 'ShowMarksHLlLine', { bg = 'SlateBlue' })
       vim.api.nvim_set_hl(0, 'ShowMarksHLuLine', { bg = 'LightRed' })
-    end
+    end,
   },
 
   {
@@ -971,8 +1070,8 @@ require('lazy').setup({
       signs = false,
       sign_priority = 8,
       keywords = {
-        FIX  = { icon = ' ', color = 'error', alt = { 'FIXME', 'BUG', 'FIXIT', 'ISSUE' }, },
-        DEL  = { icon = ' ', color = 'error', alt = { 'DELME' }, },
+        FIX = { icon = ' ', color = 'error', alt = { 'FIXME', 'BUG', 'FIXIT', 'ISSUE' } },
+        DEL = { icon = ' ', color = 'error', alt = { 'DELME' } },
         TODO = { icon = ' ', color = 'info' },
         NOTE = { icon = ' ', color = 'hint', alt = { 'INFO' } },
         HACK = { icon = ' ', color = 'warning' },
@@ -997,7 +1096,7 @@ require('lazy').setup({
         max_line_len = 400,
         exclude = {},
       },
-    }
+    },
   },
 
   -- TODO: some usefule plugin
@@ -1020,22 +1119,41 @@ require('lazy').setup({
   {
     'nvim-treesitter/nvim-treesitter',
     branch = 'main',
-    lazy = false,
+    event = { 'BufReadPost', 'BufNewFile' },
     build = ':TSUpdate',
     config = function()
-      require('nvim-treesitter').setup {
+      require('nvim-treesitter').setup({
         compilers = { 'zig', 'clang', 'gcc', 'cl' },
-        install_dir = vim.fn.stdpath('data') .. '/site'
-      }
+        install_dir = vim.fn.stdpath('data') .. '/site',
+      })
 
-      require('nvim-treesitter').install {
-        'c', 'cpp', 'c_sharp', 'rust', 'go',
-        'python', 'lua', 'javascript', 'typescript', 'vim',
-        'css', 'hlsl', 'glsl', 'wgsl',
-        'json', 'toml', 'yaml', 'xml', 'html',
-        'luadoc', 'vimdoc', 'markdown', 'markdown_inline',
-        'diff', 'query',
-      }
+      require('nvim-treesitter').install({
+        'c',
+        'cpp',
+        'c_sharp',
+        'rust',
+        'go',
+        'python',
+        'lua',
+        'javascript',
+        'typescript',
+        'vim',
+        'css',
+        'hlsl',
+        'glsl',
+        'wgsl',
+        'json',
+        'toml',
+        'yaml',
+        'xml',
+        'html',
+        'luadoc',
+        'vimdoc',
+        'markdown',
+        'markdown_inline',
+        'diff',
+        'query',
+      })
 
       local indent_blacklist = {
         c = true,
@@ -1078,6 +1196,8 @@ require('lazy').setup({
 
   {
     'saghen/blink.cmp',
+    event = 'InsertEnter',
+
     -- DELME:
     -- dependencies = {
     --   'L3MON4D3/LuaSnip',
@@ -1108,7 +1228,7 @@ require('lazy').setup({
       appearance = {
         -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- Adjusts spacing to ensure icons are aligned
-        nerd_font_variant = 'mono'
+        nerd_font_variant = 'mono',
       },
 
       completion = {
@@ -1118,7 +1238,7 @@ require('lazy').setup({
         ghost_text = { enabled = true, show_with_menu = true },
         list = {
           selection = { preselect = true, auto_insert = false },
-        }
+        },
       },
 
       -- DELME:
@@ -1144,7 +1264,7 @@ require('lazy').setup({
           -- disable search completion (we use ex-searchcompl instead)
           local cmdtype = vim.fn.getcmdtype()
           if cmdtype == '/' or cmdtype == '?' then
-            return {}  -- No sources for search mode
+            return {} -- No sources for search mode
           end
           return { 'cmdline', 'buffer' }
         end,
@@ -1153,11 +1273,11 @@ require('lazy').setup({
           ghost_text = { enabled = true },
           list = {
             selection = { preselect = true, auto_insert = false },
-          }
+          },
         },
       },
 
-      fuzzy = { implementation = 'prefer_rust_with_warning' }
+      fuzzy = { implementation = 'prefer_rust_with_warning' },
     },
   },
 
@@ -1170,9 +1290,104 @@ require('lazy').setup({
   ------------------------------
 
   {
+    'stevearc/conform.nvim',
+    -- DO NOT format on save
+    -- event = { "BufWritePre" },
+    cmd = { 'ConformInfo' },
+    opts = {
+      formatters_by_ft = {
+        lua = { 'stylua' },
+        python = { 'ruff_format' },
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        rust = { 'rustfmt' },
+        c = { 'clang_format' },
+        cpp = { 'clang_format' },
+      },
+      -- DO NOT format on save
+      -- format_on_save = { timeout_ms = 500, lsp_fallback = true },
+      formatters = {
+        prettier = {
+          prepend_args = { '--single-quote', '--tab-width', '2', '--use-tabs', 'false' },
+        },
+        stylua = {
+          prepend_args = {
+            '--quote-style',
+            'AutoPreferSingle',
+            '--indent-type',
+            'Spaces',
+            '--indent-width',
+            '2',
+          },
+        },
+        clang_format = {
+          prepend_args = { '--style={IndentWidth: 2, UseTab: Never, ColumnLimit: 0}' },
+        },
+      },
+    },
+    keys = {
+      {
+        '<leader>ff',
+        function()
+          vim.cmd('Trim')
+          require('conform').format({ async = true, lsp_fallback = true })
+          print('file formatted!')
+        end,
+        desc = 'Format',
+      },
+    },
+  },
+
+  {
+    'mfussenegger/nvim-lint',
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = function()
+      local lint = require('lint')
+      lint.linters_by_ft = {
+        python = { 'ruff' },
+        javascript = { 'eslint' },
+        typescript = { 'eslint' },
+        sh = { 'shellcheck' },
+        dockerfile = { 'hadolint' },
+      }
+      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
+        callback = function()
+          lint.try_lint()
+        end,
+      })
+    end,
+  },
+
+  {
+    'folke/trouble.nvim',
+    cmd = { 'Trouble' },
+    opts = {},
+    keys = {
+      { '<leader>xx', '<cmd>Trouble diagnostics toggle<cr>', desc = 'Diagnostics' },
+      { '<leader>xd', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = 'Buffer Diagnostics' },
+      { '<leader>xl', '<cmd>Trouble loclist toggle<cr>', desc = 'Location List' },
+      { '<leader>xq', '<cmd>Trouble qflist toggle<cr>', desc = 'Quickfix List' },
+    },
+  },
+
+  {
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    dependencies = { 'mason-org/mason.nvim' },
+    opts = {
+      ensure_installed = {
+        'stylua',
+        'ruff',
+        'prettier',
+        'shellcheck',
+        'hadolint',
+      },
+    },
+  },
+
+  {
     'neovim/nvim-lspconfig',
     dependencies = {
-      'saghen/blink.cmp'
+      'saghen/blink.cmp',
     },
     config = function()
       local capabilities = require('blink.cmp').get_lsp_capabilities()
@@ -1195,11 +1410,11 @@ require('lazy').setup({
           Lua = {
             diagnostics = {
               globals = {
-                'vim'
+                'vim',
               },
               disable = {
-                'missing-fields'
-              }
+                'missing-fields',
+              },
             },
             runtime = {
               -- Tell the language server which version of Lua you're using (most
@@ -1216,14 +1431,14 @@ require('lazy').setup({
             workspace = {
               checkThirdParty = false,
               library = {
-                vim.env.VIMRUNTIME
+                vim.env.VIMRUNTIME,
                 -- Depending on the usage, you might want to add additional paths here.
                 -- '${3rd}/luv/library'
                 -- '${3rd}/busted/library'
-              }
-            }
-          }
-        }
+              },
+            },
+          },
+        },
       })
 
       -- Use LspAttach autocommand to only map the following keys
@@ -1246,13 +1461,6 @@ require('lazy').setup({
           vim.keymap.set('n', 'K', vim.lsp.buf.signature_help, opts)
 
           vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-          -- NOTE: format file will strip whitespace first.
-          -- this is because some fmt don't handle whitespace trim well.
-          vim.keymap.set('n', '<leader>ff', function()
-            vim.cmd('Trim')
-            vim.lsp.buf.format { async = true }
-            print('file formatted!')
-          end, opts)
         end,
       })
     end,
@@ -1298,14 +1506,15 @@ require('lazy').setup({
 
   {
     'numToStr/Comment.nvim',
+    event = { 'BufReadPost', 'BufNewFile' },
     opts = {
       toggler = {
-        line = '<leader>/'
+        line = '<leader>/',
       },
       opleader = {
         line = '<leader>/',
-      }
-    }
+      },
+    },
   },
 
   {
@@ -1317,7 +1526,7 @@ require('lazy').setup({
           visual = 's',
         },
       })
-    end
+    end,
   },
 
   {
@@ -1325,7 +1534,7 @@ require('lazy').setup({
     config = function()
       require('trim').setup({
         ft_blocklist = {
-          'snacks_dashboard'
+          'snacks_dashboard',
         },
         patterns = {
           [[%s/\(\n\n\)\n\+/\1/]], -- replace multiple blank lines with a single line
@@ -1347,7 +1556,7 @@ require('lazy').setup({
         print('Trimmed trailing whitespace and empty lines!')
       end
       vim.keymap.set('n', '<leader>w', trim_ws, { noremap = true, unique = true })
-    end
+    end,
   },
 
   ------------------------------
@@ -1367,5 +1576,20 @@ require('lazy').setup({
   --   version = '^4', -- Recommended
   --   ft = { 'rust' },
   -- }
-
+}, {
+  performance = {
+    cache = { enabled = true, ttl = 3600 * 24 * 7 },
+    rtp = {
+      disabled_plugins = {
+        'gzip',
+        'matchit',
+        'matchparen',
+        'netrwPlugin',
+        'tarPlugin',
+        'tohtml',
+        'tutor',
+        'zipPlugin',
+      },
+    },
+  },
 })
