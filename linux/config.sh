@@ -35,11 +35,9 @@ else
   sudo echo "FONT=$FONT_NAME" >> "$CONFIG_FILE"
 fi
 
-# LSD
-echo "Configuring LSD..."
-mkdir -p "$HOME/.config/lsd"
-backup_file "$HOME/.config/lsd/config.yaml"
-cp "$ROOT_DIR/common/lsd.yaml" "$HOME/.config/lsd/config.yaml"
+# EZA
+echo "Configuring EZA..."
+mkdir -p "$HOME/.config/eza"
 
 # Neovim
 echo "Configuring Neovim..."

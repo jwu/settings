@@ -14,7 +14,7 @@ set "FD_VER=10.2.0"
 set "BAT_VER=0.24.0"
 set "DELTA_VER=0.18.2"
 set "RIPGREP_VER=15.1.0"
-set "LSD_VER=1.1.2"
+set "EZA_VER=0.21.0"
 set "COREUTILS_VER=0.5.0"
 
 :: error handling
@@ -44,7 +44,7 @@ call :UPDATE_STARSHIP
 call :UPDATE_FZF
 call :UPDATE_Z
 call :UPDATE_FD
-call :UPDATE_LSD
+call :UPDATE_EZA
 call :UPDATE_COREUTILS
 call :UPDATE_BAT
 call :UPDATE_RIPGREP
@@ -147,14 +147,13 @@ echo ========================================
 goto:eof
 
 :: ========================================
-:UPDATE_LSD
+:UPDATE_EZA
 :: ========================================
 
-set "LSD_DIR_NAME=lsd-v%LSD_VER%-x86_64-pc-windows-msvc"
-set "LSD_ZIP_URL=https://github.com/Peltoche/lsd/releases/download/v%LSD_VER%/%LSD_DIR_NAME%.zip"
+set "EZA_ZIP_URL=https://github.com/eza-community/eza/releases/download/v%EZA_VER%/eza_x86_64-pc-windows-gnu.zip"
 
-call :DOWNLOAD_EXTRACT_AND_MOVE "%LSD_ZIP_URL%" "%LSD_DIR_NAME%" "lsd"
-echo lsd installed successfully
+call :DOWNLOAD_AND_EXTRACT "%EZA_ZIP_URL%" "%TARGET_DIR%\eza.zip" "%TARGET_DIR%"
+echo eza installed successfully
 echo ========================================
 goto:eof
 

@@ -30,7 +30,7 @@ PACKAGES=(
   "zoxide"
   "neovim"
   "fzf"
-  "lsd"
+  "eza"
   "fd"
   "bat"
   "delta"

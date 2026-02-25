@@ -36,11 +36,9 @@ mkdir -p "$HOME/.config/alacritty"
 backup_file "$HOME/.config/alacritty/alacritty.toml"
 cp "$SCRIPT_DIR/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
 
-# LSD
-echo "Configuring LSD..."
-mkdir -p "$HOME/.config/lsd"
-backup_file "$HOME/.config/lsd/config.yaml"
-cp "$ROOT_DIR/common/lsd.yaml" "$HOME/.config/lsd/config.yaml"
+# EZA
+echo "Configuring EZA..."
+mkdir -p "$HOME/.config/eza"
 
 # Neovim
 echo "Configuring Neovim..."

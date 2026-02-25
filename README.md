@@ -32,7 +32,7 @@
    - fd 10.2.0 (更快的 find)
    - bat 0.24.0 (更好的 cat)
    - ripgrep 15.1.0 (更快的 grep)
-   - lsd 1.1.2 (更好的 ls)
+   - eza 0.21.0 (更好的 ls)
    - coreutils 0.5.0 (Unix 命令工具集)
 
 5. 运行配置脚本（创建配置文件链接）：
@@ -55,13 +55,13 @@
    - [fd](https://github.com/sharkdp/fd) 10.2.0 (更快的 find)
    - [bat](https://github.com/sharkdp/bat) 0.24.0 (更好的 cat)
    - [ripgrep](https://github.com/BurntSushi/ripgrep) 15.1.0 (更快的 grep)
-   - [lsd](https://github.com/Peltoche/lsd) 1.1.2 (更好的 ls)
+   - [eza](https://github.com/eza-community/eza) 0.21.0 (更好的 ls)
    - [coreutils](https://github.com/uutils/coreutils) 0.5.0 (Unix 命令工具集)
 
 2. **配置文件映射**:
    - **Alacritty**: 创建 `%APPDATA%\alacritty\alacritty.toml` 并引用 `win/alacritty.toml`。
    - **WezTerm**: 复制或链接 `common/wezterm.lua` 到 `%USERPROFILE%\.wezterm.lua`。
-   - **LSD**: 复制或链接 `common/lsd.yaml` 到 `%USERPROFILE%\.config\lsd\config.yaml`。
+   - **EZA**: 创建目录 `%USERPROFILE%\.config\eza`。
    - **Neovim**: 复制或链接 `common/neovim.init.lua` 到 `%LOCALAPPDATA%\nvim\init.lua`。
    - **NeoVide**: 复制或链接 `common/neovide.config.toml` 到 `%APPDATA%\neovide\config.toml`。
    - **Clink**: 配置 Clink 加载 `win/clink_scripts` 中的脚本。
@@ -95,7 +95,7 @@
 2. **安装软件包**:
    ```bash
    # 命令行工具
-   brew install starship zoxide neovim fzf lsd fd bat
+   brew install starship zoxide neovim fzf eza fd bat
    # GUI 应用
    brew install --cask wezterm alacritty neovide zed
    ```
@@ -109,7 +109,6 @@
    - `common/wezterm.lua` -> `~/.wezterm.lua`
    - `common/neovim.init.lua` -> `~/.config/nvim/init.lua`
    - `common/neovide.config.toml` -> `~/.config/neovide/config.toml`
-   - `common/lsd.yaml` -> `~/.config/lsd/config.yaml`
    - `mac/starship.toml` -> `~/.config/starship.toml`
    - `mac/alacritty.toml` -> `~/.config/alacritty/alacritty.toml`
 
@@ -125,7 +124,7 @@
 1. **安装工具**:
    使用你的发行版包管理器 (apt, pacman, yum 等) 或参考官方文档安装：
    - `alacritty` 或 `wezterm` (终端模拟器)
-   - `fish` (推荐 Shell), `starship`, `git`, `neovim`, `fzf`, `lsd`, `fd`, `bat`
+   - `fish` (推荐 Shell), `starship`, `git`, `neovim`, `fzf`, `eza`, `fd`, `bat`
 
 2. **配置文件映射**:
    - **Fish Shell**: 编辑 `~/.config/fish/config.fish`，添加环境变量初始化。

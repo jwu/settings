@@ -5,15 +5,19 @@
 ;= rem In batch mode, jump to the end of the file
 ;= goto:eof
 ;============ Add aliases below here ============
-e.=explorer .
+open=explorer $*
 clear=cls
 vi=nvim $*
 gl=git log --oneline --all --graph --decorate  $*
-ls=lsd --icon never $*
-l=lsd -l --icon never $*
-la=lsd -a --icon never $*
-lla=lsd -la --icon never $*
-lt=lsd --tree --icon never $*
+;= rem ls=lsd --icon never $*
+;= rem l=lsd -l --icon never $*
+;= rem la=lsd -a --icon never $*
+;= rem lla=lsd -la --icon never $*
+;= rem lt=lsd --tree --icon never $*
+ls=eza $*
+ll=eza -lh --icons $*
+la=eza -lah --icons $*
+lt=eza --tree --icons $*
 mv=coreutils mv $*
 rm=coreutils rm $*
 cp=coreutils cp $*

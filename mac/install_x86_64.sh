@@ -64,13 +64,13 @@ else
   echo "  fzf already installed"
 fi
 
-if ! command -v lsd &> /dev/null; then
-  echo "Installing lsd..."
-  version="v1.2.0"
-  url="https://github.com/lsd-rs/lsd/releases/download/${version}/lsd-${version}-x86_64-apple-darwin.tar.gz"
-  download_and_install "$url" "lsd"
+if ! command -v eza &> /dev/null; then
+  echo "Installing eza..."
+  version="v0.21.0"
+  url="https://github.com/eza-community/eza/releases/download/${version}/eza-x86_64-apple-darwin.tar.gz"
+  download_and_install "$url" "eza"
 else
-  echo "  lsd already installed"
+  echo "  eza already installed"
 fi
 
 if ! command -v fd &> /dev/null; then
@@ -187,10 +187,8 @@ echo "Configuring WezTerm..."
 backup_file "$HOME/.wezterm.lua"
 cp "$ROOT_DIR/common/wezterm.lua" "$HOME/.wezterm.lua"
 
-echo "Configuring LSD..."
-mkdir -p "$HOME/.config/lsd"
-backup_file "$HOME/.config/lsd/config.yaml"
-cp "$ROOT_DIR/common/lsd.yaml" "$HOME/.config/lsd/config.yaml"
+echo "Configuring EZA..."
+mkdir -p "$HOME/.config/eza"
 
 echo "Configuring Neovim..."
 mkdir -p "$HOME/.config/nvim"
@@ -227,7 +225,7 @@ echo ""
 echo "    Make sure to add ~/.local/bin to your PATH:"
 echo "      echo 'export PATH=\"~/.local/bin:\$PATH\"' >> ~/.zshrc"
 echo ""
-echo "    Installed CLI tools: starship, zoxide, neovim, fzf, lsd, fd, bat, delta, ripgrep"
+echo "    Installed CLI tools: starship, zoxide, neovim, fzf, eza, fd, bat, delta, ripgrep"
 echo "    Installed Fonts: FiraCode"
 echo "    Next Step:"
 echo "        Please Manually Install GUI apps: WezTerm, Neovide"

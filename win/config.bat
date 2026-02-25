@@ -36,19 +36,16 @@ echo program = "cmd.exe"
 echo args = ["/s", "/k", "%MY_SETTINGS_ESCAPED%\\init.bat"]
 ) > %APPDATA%\alacritty\alacritty.toml
 
-:: config lsd
+:: config eza
 :: ========================================
 
-:: create lsd directory
+:: create eza directory
 if not exist "%USERPROFILE%\.config" (
   mkdir "%USERPROFILE%\.config"
 )
-if not exist "%USERPROFILE%\.config\lsd" (
-  mkdir "%USERPROFILE%\.config\lsd"
+if not exist "%USERPROFILE%\.config\eza" (
+  mkdir "%USERPROFILE%\.config\eza"
 )
-
-:: copy lsd.yaml
-copy /Y "%MY_ROOT%\common\lsd.yaml" "%USERPROFILE%\.config\lsd\config.yaml"
 
 :: config neovim
 :: ========================================
