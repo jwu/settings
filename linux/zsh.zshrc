@@ -21,6 +21,10 @@ export NVM_DIR="$HOME/.nvm"
 
 alias neovide="/Applications/Neovide.app/Contents/MacOS/neovide --fork"
 alias zed="/Applications/Zed.app/Contents/MacOS/zed"
+alias ls='eza'
+alias ll='eza -lh --icons'
+alias la='eza -lah --icons'
+alias lt='eza --icons --tree'
 
 # opencode
 export PATH=/Users/zyq/.opencode/bin:$PATH
