@@ -236,6 +236,7 @@
   - [ffmpeg](https://www.ffmpeg.org/)
   - [chafa](https://github.com/hpjansson/chafa)
     - [viu](https://github.com/atanunq/viu)
+  - [pngpaste](https://github.com/jcsalterego/pngpaste)
 - utils (okay)
   - [s](https://github.com/zquestz/s)
   - [fanyi](https://github.com/afc163/fanyi)
