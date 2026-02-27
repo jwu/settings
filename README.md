@@ -216,6 +216,8 @@
   - [sd](https://github.com/chmln/sd)
   - [procs](https://github.com/dalance/procs)
   - [glow](https://github.com/charmbracelet/glow)
+  - [pass](https://www.passwordstore.org/)
+    - [gopass](https://github.com/gopasspw/gopass)
 - utils (tui)
   - [yazi](https://github.com/sxyazi/yazi)
   - [trippy](https://github.com/fujiapple852/trippy)
