@@ -289,4 +289,3 @@ if %ERROR_COUNT% equ 0 (
   echo Update completed with %ERROR_COUNT% error(s)
 )
 exit /b %ERROR_COUNT%
-
