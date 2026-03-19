@@ -10,7 +10,7 @@ cyan = "#56b6c2"
 green = "#98c379"
 magenta = "#c678dd"
 red = "#e06c75"
-white = "#dcdfe4"
+white = "#abb2bf"
 yellow = "#e5c07b"
 
 [colors.cursor]
@@ -19,14 +19,14 @@ text = "CellBackground"
 
 [colors.footer_bar]
 background = "#282c34"
-foreground = "#dcdfe4"
+foreground = "#abb2bf"
 
 [colors.hints.end]
 background = "#282c34"
-foreground = "#e5c07b"
+foreground = "#d19a66"
 
 [colors.hints.start]
-background = "#e5c07b"
+background = "#d19a66"
 foreground = "#282c34"
 
 [colors.line_indicator]
@@ -40,19 +40,19 @@ cyan = "#56b6c2"
 green = "#98c379"
 magenta = "#c678dd"
 red = "#e06c75"
-white = "#dcdfe4"
+white = "#abb2bf"
 yellow = "#e5c07b"
 
 [colors.primary]
 background = "#282c34"
-foreground = "#dcdfe4"
+foreground = "#abb2bf"
 
 [colors.search.focused_match]
-background = "#e5c07b"
+background = "#d19a66"
 foreground = "#282c34"
 
 [colors.search.matches]
-background = "#98c379"
+background = "#ebd09c"
 foreground = "#282c34"
 
 [colors.selection]

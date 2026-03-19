@@ -74,6 +74,9 @@ config.window_frame = {
   inactive_titlebar_bg = '#282c34',
 }
 config.colors = {
+  foreground = '#abb2bf',
+  selection_fg = 'none',
+
   tab_bar = {
     -- active tab
     active_tab = {
@@ -357,11 +360,11 @@ config.visual_bell = {
 
 config.keys = {
   -- new & close
-  -- {
-  --   key = 't',
-  --   mods = mod_key,
-  --   action = wezterm.action.SpawnTab('CurrentPaneDomain'),
-  -- },
+  {
+    key = 't',
+    mods = mod_key,
+    action = wezterm.action.SpawnTab('CurrentPaneDomain'),
+  },
   {
     key = 'n',
     mods = mod_key,
