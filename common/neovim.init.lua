@@ -623,6 +623,9 @@ require('lazy').setup({
             jump = { close = true },
           },
         },
+        layout = {
+          preset = 'vertical'
+        },
       },
       notifier = {
         enabled = true,
