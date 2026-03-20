@@ -1,4 +1,4 @@
-export PATH=/opt/homebrew/bin:~/bin:~/.local/bin:/usr/local/bin:$PATH
+export PATH=~/bin:~/.local/bin:/usr/local/bin:$PATH
 export ZSH=~/.oh-my-zsh
 export EDITOR=nvim
 export LANG=en_US.UTF-8
@@ -25,6 +25,11 @@ alias ls='eza'
 alias ll='eza -lh --icons'
 alias la='eza -lah --icons'
 alias lt='eza --icons --tree'
+
+# ghostty
+if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
+  source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
+fi
 
 # opencode
 export PATH=/Users/zyq/.opencode/bin:$PATH
