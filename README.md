@@ -215,6 +215,7 @@
   - [delta](https://github.com/dandavison/delta)
   - [sd](https://github.com/chmln/sd)
   - [procs](https://github.com/dalance/procs)
+  - [zmx](https://github.com/neurosnap/zmx)
   - [glow](https://github.com/charmbracelet/glow)
   - [pass](https://www.passwordstore.org/)
     - [gopass](https://github.com/gopasspw/gopass)
