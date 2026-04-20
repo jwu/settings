@@ -150,7 +150,7 @@ goto:eof
 :UPDATE_EZA
 :: ========================================
 
-set "EZA_ZIP_URL=https://github.com/eza-community/eza/releases/download/v%EZA_VER%/eza_x86_64-pc-windows-gnu.zip"
+set "EZA_ZIP_URL=https://github.com/eza-community/eza/releases/download/v%EZA_VER%/eza.exe_x86_64-pc-windows-gnu.zip"
 
 call :DOWNLOAD_AND_EXTRACT "%EZA_ZIP_URL%" "%TARGET_DIR%\eza.zip" "%TARGET_DIR%"
 echo eza installed successfully
@@ -161,7 +161,7 @@ goto:eof
 :UPDATE_COREUTILS
 :: ========================================
 
-set "COREUTILS_DIR_NAME=coreutils-%COREUTILS_VER%-x86_64-pc-windows-msvc"
+set "COREUTILS_DIR_NAME=coreutils-%COREUTILS_VER%-x86_64-pc-windows-gnu"
 set "COREUTILS_ZIP_URL=https://github.com/uutils/coreutils/releases/download/%COREUTILS_VER%/%COREUTILS_DIR_NAME%.zip"
 
 call :DOWNLOAD_EXTRACT_AND_MOVE "%COREUTILS_ZIP_URL%" "%COREUTILS_DIR_NAME%" "coreutils"
