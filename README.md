@@ -1,4 +1,4 @@
-# Terminal Settings
+# Terminal Configs
 
 开发环境配置方案 (Windows, Mac, Linux)。包含了 Alacritty, WezTerm, Neovim, Starship, Zsh/Fish 等工具的配置。
 
@@ -11,11 +11,11 @@
 1. 打开 CMD 或 PowerShell。
 2. 克隆此仓库（建议路径）：
    ```cmd
-   git clone https://github.com/jwu/settings.git %USERPROFILE%\bin\settings
+   git clone https://github.com/jwu/configs.git %USERPROFILE%\bin\configs
    ```
 3. 进入 `win` 目录：
    ```cmd
-   cd %USERPROFILE%\bin\settings\win
+   cd %USERPROFILE%\bin\configs\win
    ```
 4. 运行安装脚本（自动下载以下工具）：
    ```cmd
@@ -23,17 +23,18 @@
    ```
 
    安装的工具包括：
-   - Alacritty v0.16.1 (终端模拟器)
+   - Alacritty v0.17.0 (终端模拟器)
    - Nerd Fonts (FiraMono) v3.4.0 (图标字体)
-   - Clink v1.9.9 + clink-completions v0.6.7 (增强 CMD)
+   - Clink v1.9.18 + clink-completions v0.6.8 (增强 CMD)
    - Starship v1.24.2 (终端提示符)
-   - fzf 0.67.0 (模糊搜索)
-   - zoxide 0.9.8 (智能目录跳转)
-   - fd 10.2.0 (更快的 find)
-   - bat 0.24.0 (更好的 cat)
+   - fzf 0.71.0 (模糊搜索)
+   - zoxide 0.9.9 (智能目录跳转)
+   - fd 10.4.2 (更快的 find)
+   - bat 0.26.1 (更好的 cat)
+   - delta 0.19.2 (更好的 diff)
    - ripgrep 15.1.0 (更快的 grep)
-   - eza 0.21.0 (更好的 ls)
-   - coreutils 0.5.0 (Unix 命令工具集)
+   - eza 0.23.4 (更好的 ls)
+   - coreutils 0.8.0 (Unix 命令工具集)
 
 5. 运行配置脚本（创建配置文件链接）：
    ```cmd
@@ -45,25 +46,27 @@
 如果你更喜欢手动安装工具，请参考以下步骤：
 
 1. **安装工具**:
-   - [Alacritty](https://github.com/alacritty/alacritty/releases) v0.16.1 (终端模拟器)
+   - [Alacritty](https://github.com/alacritty/alacritty/releases) v0.17.0 (终端模拟器)
    - [Nerd Fonts (FiraMono)](https://www.nerdfonts.com/font-downloads) v3.4.0 (图标字体)
-   - [Clink](https://github.com/chrisant996/clink) v1.9.9 (增强 CMD 体验)
-   - [clink-completions](https://github.com/vladimir-kotikov/clink-completions) v0.6.7 (Clink 自动补全)
+   - [Clink](https://github.com/chrisant996/clink) v1.9.18 (增强 CMD 体验)
+   - [clink-completions](https://github.com/vladimir-kotikov/clink-completions) v0.6.8 (Clink 自动补全)
    - [Starship](https://starship.rs/) v1.24.2 (终端提示符)
-   - [fzf](https://github.com/junegunn/fzf) 0.67.0 (模糊搜索)
-   - [zoxide](https://github.com/ajeetdsouza/zoxide) 0.9.8 (智能目录跳转)
-   - [fd](https://github.com/sharkdp/fd) 10.2.0 (更快的 find)
-   - [bat](https://github.com/sharkdp/bat) 0.24.0 (更好的 cat)
+   - [fzf](https://github.com/junegunn/fzf) 0.71.0 (模糊搜索)
+   - [zoxide](https://github.com/ajeetdsouza/zoxide) 0.9.9 (智能目录跳转)
+   - [fd](https://github.com/sharkdp/fd) 10.4.2 (更快的 find)
+   - [bat](https://github.com/sharkdp/bat) 0.26.1 (更好的 cat)
+   - [delta](https://github.com/dandavison/delta) 0.19.2 (更好的 diff)
    - [ripgrep](https://github.com/BurntSushi/ripgrep) 15.1.0 (更快的 grep)
-   - [eza](https://github.com/eza-community/eza) 0.21.0 (更好的 ls)
-   - [coreutils](https://github.com/uutils/coreutils) 0.5.0 (Unix 命令工具集)
+   - [eza](https://github.com/eza-community/eza) 0.23.4 (更好的 ls)
+   - [coreutils](https://github.com/uutils/coreutils) 0.8.0 (Unix 命令工具集)
 
 2. **配置文件映射**:
    - **Alacritty**: 创建 `%APPDATA%\alacritty\alacritty.toml` 并引用 `win/alacritty.toml`。
-   - **WezTerm**: 复制或链接 `common/wezterm.lua` 到 `%USERPROFILE%\.wezterm.lua`。
+   - **WezTerm**: 复制或链接 `common/.wezterm.lua` 到 `%USERPROFILE%\.wezterm.lua`。
    - **EZA**: 创建目录 `%USERPROFILE%\.config\eza`。
-   - **Neovim**: 复制或链接 `common/neovim.init.lua` 到 `%LOCALAPPDATA%\nvim\init.lua`。
-   - **NeoVide**: 复制或链接 `common/neovide.config.toml` 到 `%APPDATA%\neovide\config.toml`。
+   - **Neovim**: 复制或链接 `common/.config/nvim/init.lua` 到 `%LOCALAPPDATA%\nvim\init.lua`。
+   - **NeoVide**: 复制或链接 `common/.config/neovide/config.toml` 到 `%APPDATA%\neovide\config.toml`。
+   - **OmniSharp**: 复制或链接 `common/.omnisharp/omnisharp.json` 到 `%USERPROFILE%\.omnisharp\omnisharp.json`。
    - **Clink**: 配置 Clink 加载 `win/clink_scripts` 中的脚本。
 
 ---
@@ -77,11 +80,11 @@
 1. 打开终端。
 2. 克隆此仓库：
    ```bash
-   git clone https://github.com/jwu/settings.git ~/bin/settings
+   git clone https://github.com/jwu/configs.git ~/bin/configs
    ```
 3. 运行安装脚本：
    ```bash
-   cd ~/bin/settings/mac
+   cd ~/bin/configs/mac
    ./install.sh
    ```
 
@@ -95,42 +98,67 @@
 2. **安装软件包**:
    ```bash
    # 命令行工具
-   brew install starship zoxide neovim fzf eza fd bat
+   brew install starship zoxide neovim fzf eza fd bat delta
    # GUI 应用
-   brew install --cask wezterm alacritty neovide zed
+   brew install --cask wezterm@nightly alacritty neovide font-fira-mono-nerd-font
    ```
 
 3. **配置 Shell (Zsh)**:
    - 安装 [Oh My Zsh](https://ohmyz.sh/)。
    - 安装插件 `zsh-autosuggestions`。
-   - 参考或直接使用 `mac/zsh.zshrc` 的内容替换 `~/.zshrc`。
+   - 参考或直接使用 `mac/.zshrc` 的内容替换 `~/.zshrc`。
 
 4. **复制/链接配置文件**:
-   - `common/wezterm.lua` -> `~/.wezterm.lua`
-   - `common/neovim.init.lua` -> `~/.config/nvim/init.lua`
-   - `common/neovide.config.toml` -> `~/.config/neovide/config.toml`
-   - `mac/starship.toml` -> `~/.config/starship.toml`
-   - `mac/alacritty.toml` -> `~/.config/alacritty/alacritty.toml`
+   - `common/.wezterm.lua` -> `~/.wezterm.lua`
+   - `common/.config/nvim/init.lua` -> `~/.config/nvim/init.lua`
+   - `common/.config/neovide/config.toml` -> `~/.config/neovide/config.toml`
+   - `common/.omnisharp/omnisharp.json` -> `~/.omnisharp/omnisharp.json`
+   - `mac/.config/ghostty/config` -> `~/.config/ghostty/config`
+   - `mac/.config/starship.toml` -> `~/.config/starship.toml`
+   - `mac/.config/alacritty/alacritty.toml` -> `~/.config/alacritty/alacritty.toml`
+   - `mac/.zshrc` -> `~/.zshrc`
 
 ---
 
 ## Linux 配置方案
 
-### 自动配置
-*开发中 (WIP)...*
+### 自动配置 (Arch Linux / pacman)
+
+当前 `linux/install.sh` 面向 Arch Linux / pacman 环境，会自动：
+- 安装 `zsh`, `starship`, `zoxide`, `neovim`, `fzf`, `eza`, `fd`, `bat`, `git-delta`, `terminus-font`
+- 设置默认 shell 为 `zsh`
+- 安装 Oh My Zsh、`zsh-autosuggestions`、Dracula 主题
+- 运行 `linux/config.sh` 同步配置文件
+
+使用方式：
+```bash
+cd ~/bin/configs/linux
+./install.sh
+```
 
 ### 手动配置
 
 1. **安装工具**:
-   使用你的发行版包管理器 (apt, pacman, yum 等) 或参考官方文档安装：
-   - `alacritty` 或 `wezterm` (终端模拟器)
-   - `fish` (推荐 Shell), `starship`, `git`, `neovim`, `fzf`, `eza`, `fd`, `bat`
+   使用你的发行版包管理器或参考官方文档安装：
+   - `zsh`、`starship`、`zoxide`
+   - `neovim`、`fzf`、`eza`、`fd`、`bat`、`git-delta`
+   - `alacritty`（可选）
+   - 终端字体（Arch 下自动脚本使用 `terminus-font`）
 
-2. **配置文件映射**:
-   - **Fish Shell**: 编辑 `~/.config/fish/config.fish`，添加环境变量初始化。
-   - **Alacritty**: 复制 `linux/alacritty.toml` 到 `~/.config/alacritty/alacritty.toml`。
-   - **Starship**: 复制 `linux/starship.toml` 到 `~/.config/starship.toml`。
-   - **Neovim**: 复制 `common/neovim.init.lua` 到 `~/.config/nvim/init.lua`。
+2. **配置 Shell (Zsh)**:
+   - 安装 [Oh My Zsh](https://ohmyz.sh/)。
+   - 安装插件 `zsh-autosuggestions`。
+   - 参考或直接使用 `linux/.zshrc` 的内容替换 `~/.zshrc`。
+
+3. **复制/链接配置文件**:
+   - `common/.config/nvim/init.lua` -> `~/.config/nvim/init.lua`
+   - `common/.omnisharp/omnisharp.json` -> `~/.omnisharp/omnisharp.json`
+   - `linux/.config/starship.toml` -> `~/.config/starship.toml`
+   - `linux/.config/alacritty/alacritty.toml` -> `~/.config/alacritty/alacritty.toml`（如果使用 Alacritty）
+   - `linux/.zshrc` -> `~/.zshrc`
+
+4. **可选的 Fish 配置**:
+   - 仓库中还提供了 `linux/.config/fish/config.fish`，如果你使用 Fish，可按需手动拷贝到 `~/.config/fish/config.fish`。
 
 ---
 

@@ -11,7 +11,7 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 echo ">>> Starting installation setup..."
 echo "    Root Config Dir: $ROOT_DIR"
-echo "    Mac Settings Dir: $SCRIPT_DIR"
+echo "    Mac Configs Dir: $SCRIPT_DIR"
 
 # ==========================================
 # Homebrew Packages

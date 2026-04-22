@@ -21,10 +21,10 @@ Only remember these entry points:
 - `common/` — shared configs used by multiple platforms
 
 Useful shared configs:
-- `common/wezterm.lua`
-- `common/neovim.init.lua`
-- `common/neovide.config.toml`
-- `common/git.gitconfig`
+- `common/.wezterm.lua`
+- `common/.config/nvim/init.lua`
+- `common/.config/neovide/config.toml`
+- `common/.gitconfig`
 
 ## Working rules
 

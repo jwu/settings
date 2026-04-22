@@ -11,7 +11,7 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 echo ">>> Starting installation setup..."
 echo "    Root Config Dir: $ROOT_DIR"
-echo "    Linux Settings Dir: $SCRIPT_DIR"
+echo "    Linux Configs Dir: $SCRIPT_DIR"
 
 # ==========================================
 # Pacman Packages

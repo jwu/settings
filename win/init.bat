@@ -27,13 +27,13 @@ if not defined MY_ROOT (
 :: remove trailing '\' from %MY_ROOT%
 if "%MY_ROOT:~-1%" == "\" set "MY_ROOT=%MY_ROOT:~0,-1%"
 
-set "MY_SETTINGS=%MY_ROOT%\win"
+set "MY_CONFIGS=%MY_ROOT%\win"
 set "MY_BIN=%USERPROFILE%\bin"
 
 :: add aliases
 :: ========================================
 
-call "%MY_SETTINGS%\cmds\aliases.cmd"
+call "%MY_CONFIGS%\cmds\aliases.cmd"
 
 :: add %USERPROFILE%\bin\ to environment path
 :: ========================================
@@ -45,7 +45,7 @@ if exist "%MY_BIN%" (
 :: set starship config path before clink
 :: ========================================
 
-set "STARSHIP_CONFIG=%MY_SETTINGS%\starship.toml"
+set "STARSHIP_CONFIG=%MY_CONFIGS%\starship.toml"
 
 :: set fzf option before clink
 :: ========================================
@@ -62,7 +62,7 @@ if "%PROCESSOR_ARCHITECTURE%"=="x86" (
   set CLINK_ARCH=x64
 )
 
-"%MY_BIN%\clink\clink_%CLINK_ARCH%.exe" inject --quiet --profile "%MY_SETTINGS%\clink_profile" --scripts "%MY_SETTINGS%\clink_scripts"
+"%MY_BIN%\clink\clink_%CLINK_ARCH%.exe" inject --quiet --profile "%MY_CONFIGS%\clink_profile" --scripts "%MY_CONFIGS%\clink_scripts"
 
 :: init end
 :: ========================================
@@ -71,12 +71,12 @@ set __INIT_END__=%time%
 
 :: show debug info
 if %__DBG_INFO__% gtr 0 (
-  "%MY_SETTINGS%\cmds\timer.cmd" "%__INIT_START__%" "%__INIT_END__%"
+  "%MY_CONFIGS%\cmds\timer.cmd" "%__INIT_START__%" "%__INIT_END__%"
   echo ----------------------------------------
   echo PROCESSOR_ARCHITECTURE = %PROCESSOR_ARCHITECTURE%
   echo LANG = %LANG%
   echo MY_ROOT = %MY_ROOT%
-  echo MY_SETTINGS = %MY_SETTINGS%
+  echo MY_CONFIGS = %MY_CONFIGS%
 )
 
 exit /b
