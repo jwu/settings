@@ -254,6 +254,7 @@ cd ~/bin/configs/linux
   - [btm](https://github.com/ClementTsang/bottom)
     - [btop](https://github.com/aristocratos/btop)
     - [mactop](https://github.com/metaspartan/mactop)
+    - [zenith](https://github.com/bvaisvil/zenith)
   - [xplr](https://github.com/sayanarijit/xplr)
   - [impala](https://github.com/pythops/impala)
   - [clashtui](https://github.com/JohanChane/clashtui)
