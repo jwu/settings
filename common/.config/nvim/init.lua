@@ -1424,6 +1424,9 @@ require('lazy').setup({
       vim.lsp.config('pyright', {
         capabilities = capabilities,
       })
+      vim.lsp.config('vtsls', {
+        capabilities = capabilities,
+      })
       vim.lsp.config('lua_ls', {
         capabilities = capabilities,
         settings = {
@@ -1495,11 +1498,12 @@ require('lazy').setup({
     opts = {
       ensure_installed = {
         'clangd',
-        'omnisharp',
-        'rust_analyzer',
-        'lua_ls',
-        'pyright',
         'jsonls',
+        'lua_ls',
+        'omnisharp',
+        'pyright',
+        'rust_analyzer',
+        'vtsls',
       },
       automatic_installation = false,
       automatic_enable = true,
