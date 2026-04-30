@@ -623,7 +623,18 @@ require('lazy').setup({
         enabled = true,
         sources = {
           explorer = {
-            jump = { close = true },
+            -- DISABLED
+            -- jump = { close = true },
+            hidden = true,
+            ignored = false,
+          },
+          files = {
+            hidden = true,
+            ignored = false,
+          },
+          grep = {
+            hidden = true,
+            ignored = false,
           },
         },
         layout = {
