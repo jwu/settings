@@ -1180,6 +1180,8 @@ require('lazy').setup({
         lua = true,
         yaml = true,
         json = true,
+        javascript = true,
+        typescript = true,
       }
 
       vim.api.nvim_create_autocmd('FileType', {
@@ -1349,7 +1351,7 @@ require('lazy').setup({
       -- use prettier format for json
       -- NOTE: for '=', it's trigger priortty is 1st formatexpr, 2nd indentexpr
       vim.api.nvim_create_autocmd('FileType', {
-        pattern = { 'json' },
+        pattern = { 'json', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
         callback = function()
           vim.opt_local.formatexpr = 'v:lua.require\'conform\'.formatexpr()'
         end,
